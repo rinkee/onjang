@@ -1,0 +1,18 @@
+{
+  "" : {
+    "diagnostics" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/desktop_window-master.dia",
+    "emit-module-dependencies" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/desktop_window-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/desktop_window-master-emit-module.dia",
+    "swift-dependencies" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/desktop_window-master.swiftdeps"
+  },
+  "/Users/seong/.pub-cache/hosted/pub.dev/desktop_window-0.4.0/macos/Classes/DesktopWindowPlugin.swift" : {
+    "const-values" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/DesktopWindowPlugin.swiftconstvalues",
+    "dependencies" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/DesktopWindowPlugin.d",
+    "diagnostics" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/DesktopWindowPlugin.dia",
+    "index-unit-output-path" : "/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/DesktopWindowPlugin.o",
+    "llvm-bc" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/DesktopWindowPlugin.bc",
+    "object" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/DesktopWindowPlugin.o",
+    "swift-dependencies" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/DesktopWindowPlugin.swiftdeps",
+    "swiftmodule" : "/Users/seong/flutter_project/jangboo_flutter/build/macos/Build/Intermediates.noindex/Pods.build/Debug/desktop_window.build/Objects-normal/x86_64/DesktopWindowPlugin~partial.swiftmodule"
+  }
+}

@@ -8,12 +8,8 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
-			 <array>
-        <string>io.supabase.jangboo</string>
-      </array>
 			<array>
-				<!-- TODO Replace this value: -->
-				<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+				<string>io.supabase.jangboo</string>
 				<string>com.googleusercontent.apps.566992922073-17e259s42g1qvduq0tu2cmmd8376gi34</string>
 			</array>
 		</dict>
