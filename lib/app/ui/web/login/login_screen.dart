@@ -5,14 +5,8 @@ import 'package:jangboo_flutter/app/data/service/auth_service.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
-import 'package:jangboo_flutter/app/controller/user_controller.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
-import 'package:jangboo_flutter/app/ui/web/home/home_screen_desktop.dart';
 import 'package:jangboo_flutter/app/ui/web/login/email_screen.dart';
-import 'package:jangboo_flutter/app/ui/web/login/sign_in_screen.dart';
-import 'package:jangboo_flutter/app/supabase.dart';
-import 'package:responsive_framework/responsive_framework.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert'; // for the utf8.encode method
 

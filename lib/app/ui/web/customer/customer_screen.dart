@@ -1,45 +1,38 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
+import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/number_pad_widget.dart';
-import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
-import 'package:jangboo_flutter/app/controller/customer_content_controller.dart';
-import 'package:jangboo_flutter/app/controller/navigation_controller.dart';
+import 'package:jangboo_flutter/app/controller/customer_controller.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
-
-import 'package:jangboo_flutter/app/ui/web/customer/edit_customer_info_screen.dart';
-import 'package:jangboo_flutter/app/ui/web/customer/show_record_screen.dart';
 import 'package:jangboo_flutter/app/data/model/customer_model.dart';
 import 'package:jangboo_flutter/app/supabase.dart';
+import 'package:jangboo_flutter/app/ui/widget/password_dots_widget.dart';
+import 'package:jangboo_flutter/app/ui/widget/state_change_button_widget.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-CustomerContentController _customerCtr = Get.find<CustomerContentController>();
+CustomerController _customerCtr = Get.find<CustomerController>();
 
-class CustomerDesktop extends StatefulWidget {
-  CustomerDesktop({super.key, required this.customer});
+class CustomerScreen extends StatefulWidget {
+  CustomerScreen({super.key, required this.customer});
 
   CustomerModel customer;
 
   @override
-  State<CustomerDesktop> createState() {
-    return _CustomerDesktopState();
+  State<CustomerScreen> createState() {
+    return _CustomerScreenState();
   }
 }
 
-class _CustomerDesktopState extends State<CustomerDesktop> {
+class _CustomerScreenState extends State<CustomerScreen> {
   final TextEditingController searchCtr = TextEditingController();
-  final TextEditingController numberPadCtr = TextEditingController();
-
-  final TextEditingController addPointCtr = TextEditingController();
 
   var f = NumberFormat('###,###,###,###');
   var favorite = false.obs;
@@ -52,13 +45,7 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
   void initState() {
     // TODO: implement initState
     getCustomerModeGetStorage();
-    numberPadCtr.addListener(() {
-      _customerCtr.enterUsePrice.value = numberPadCtr.text;
-    });
 
-    addPointCtr.addListener(() {
-      _customerCtr.enterAddPrice.value = addPointCtr.text;
-    });
     // idx = customerCtr.currentCustomerIndex;m
     customer = widget.customer;
     favorite.value = customer.favorite;
@@ -79,7 +66,7 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
     }
 
     _customerCtr.balance.value = customer.balance;
-    _customerCtr.enterUsePrice.value = '';
+    _customerCtr.addPointValue.value = '';
 
     // customerCtr.type.value = ActionType.use.title;
     // customerCtr.cardColor!.value = ActionType.use.iconColor!;
@@ -134,6 +121,7 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         actions: [
           Obx(
@@ -220,11 +208,10 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
                                     ButtonWidget(
                                         bgColor: Colors.grey[200],
                                         onTap: () async {
-                                          // await customerCtr.fucDeleteCustomer(
-                                          //     customerId: customer.id);
-                                          Get.to(() => EditCustomerInfoScreen(
-                                                customerId: customer.id,
-                                              ));
+                                          Get.back();
+
+                                          Get.toNamed(
+                                              '${Routes.customerInfo}/${customer.id}');
                                         },
                                         child: const Padding(
                                           padding: EdgeInsets.symmetric(
@@ -377,66 +364,49 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
                             style: TextStyle(fontSize: 20),
                           ),
                           Obx(() => Text(
-                                _customerCtr.enterUsePrice.value == ''
+                                _customerCtr.addPointValue.value == ''
                                     ? '0P'
-                                    : '${f.format(int.parse(_customerCtr.enterUsePrice.value))}P',
+                                    : '${f.format(int.parse(_customerCtr.addPointValue.value))}P',
                                 style: const TextStyle(
                                     fontSize: 40, fontWeight: FontWeight.bold),
                               )),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10, bottom: 10),
-                            child: Divider(),
-                          ),
-                          // const Gap(50),
-                          Container(
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(0.0),
-                              child: Column(
-                                children: keys
-                                    .map(
-                                      (x) => Row(
-                                        children: x.map((y) {
-                                          return Expanded(
-                                            child: NumberPadWidget(
-                                              textCtr: numberPadCtr,
-                                              label: y,
-                                              onTap: (val) {},
-                                              value: y,
-                                            ),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    )
-                                    .toList(),
+                          Gap(10),
+                          Divider(),
+                          const Gap(20),
+                          Obx(
+                            () => Center(
+                              child: NumberPadWidget(
+                                value: _customerCtr.addPointValue.value,
+                                aspectRatio: 1.6,
+                                numberStyle: TextStyle(fontSize: 26),
+                                onChanged: (newValue) {
+                                  _customerCtr.addPointValue.value = newValue;
+                                  // inputValue.value = newValue;
+                                },
                               ),
                             ),
                           ),
                           const Spacer(),
                           ButtonWidget(
                             onTap: () async {
-                              _customerCtr.type.value = ActionType.use.title;
-                              _customerCtr.seclectedMenu = ActionType.use;
                               if (isLoading.value == false &&
-                                  _customerCtr.enterUsePrice.value != '') {
+                                  _customerCtr.addPointValue.value != '') {
                                 isLoading.value = true;
                                 try {
                                   await _customerCtr
-                                      .fucAddOrUse(
+                                      .usePoint(
                                           customerId: customer.id,
                                           point: int.parse(
-                                              _customerCtr.enterUsePrice.value))
+                                              _customerCtr.addPointValue.value))
                                       .then((value) {
                                     // setState(() {});
 
                                     isLoading.value = false;
+                                    _customerCtr.loadCustomerList();
                                     ShowDoneDialog(
                                         context: context,
-                                        point: _customerCtr.enterUsePrice.value,
-                                        action: ActionType.use);
+                                        point: _customerCtr.addPointValue.value,
+                                        action: 'use');
                                   });
                                 } catch (e) {
                                   print(e);
@@ -475,9 +445,9 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
   Future<dynamic> ShowDoneDialog(
       {required BuildContext context,
       required String point,
-      required ActionType action}) {
-    _customerCtr.enterUsePrice.value = '';
-    numberPadCtr.clear();
+      required String action}) {
+    _customerCtr.addPointValue.value = '';
+
     openDialog.value = true;
     return showDialog(
         context: context,
@@ -505,7 +475,7 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
                                   backgroundColor: subColor,
                                   radius: 30,
                                   child: Icon(
-                                    action == ActionType.add
+                                    action == 'charge'
                                         ? Icons.wallet_rounded
                                         : Icons.check_rounded,
                                     color: sgColor,
@@ -517,7 +487,7 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
                                     fontWeight: FontWeight.bold, fontSize: 24),
                               ),
                               Text(
-                                action == ActionType.add ? '충전 완료' : '사용 완료',
+                                action == 'charge' ? '충전 완료' : '사용 완료',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 20),
                               ),
@@ -589,8 +559,7 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
                                     Get.back();
 
                                     await _customerCtr
-                                        .setDeleteCustomer(
-                                            customerId: customer.id)
+                                        .deleteCustomer(customerId: customer.id)
                                         .then((value) {
                                       Get.back();
                                       Get.snackbar(
@@ -632,6 +601,7 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
                     ),
                   ],
                 ),
+                Gap(10),
                 // IconButton(
                 //     onPressed: () {
                 //       favorite.value = !favorite.value;
@@ -659,13 +629,9 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
               child: ButtonWidget(
                   h: 50,
                   onTap: () {
-                    _customerCtr.type.value = ActionType.add.title;
+                    _customerCtr.addPointValue.value = '';
 
-                    _customerCtr.enterUsePrice.value = '';
-                    addPointCtr.clear();
-                    numberPadCtr.clear();
-                    _customerCtr.seclectedMenu = ActionType.add;
-                    ActionBottomSheet();
+                    ActionDialog();
                   },
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
@@ -736,20 +702,15 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
     );
   }
 
-  Future<dynamic> ActionBottomSheet() {
+  Future<dynamic> ActionDialog() {
     var title = '사용하기';
     var useText = '얼마를 사용할까요?';
     Color color = sgColor;
     isLoading.value = false;
 
-    if (_customerCtr.seclectedMenu == ActionType.add) {
-      title = '충전하기';
-      useText = '얼마를 충전할까요?';
-      color = subColor;
-    }
     final UserController _userCtr = Get.find<UserController>();
 
-    final addPercent = _userCtr.user.value!.addRatio.obs;
+    final addPercent = _userCtr.beforeAddRatio;
 
     return showDialog(
         // backgroundColor: Colors.transparent,
@@ -768,10 +729,10 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
             padding: const EdgeInsets.all(30.0),
             child: Dialog(child: Obx(() {
               var entryPoint = 0.0;
-              if (_customerCtr.enterAddPrice.value != '') {
-                entryPoint = double.parse(_customerCtr.enterAddPrice.value);
+              if (_customerCtr.usePotinValue.value != '') {
+                entryPoint = double.parse(_customerCtr.usePotinValue.value);
               }
-              var showAddPoint = _customerCtr.enterAddPrice.value == ''
+              var showAddPoint = _customerCtr.usePotinValue.value == ''
                   ? useText
                   : '+ ${f.format(entryPoint)}P';
 
@@ -781,7 +742,7 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
 
               var addPoint = entryPoint + (entryPoint * addPercent.value / 100);
 
-              var showAfterPoint = _customerCtr.enterAddPrice.value == ''
+              var showAfterPoint = _customerCtr.usePotinValue.value == ''
                   ? ''
                   : '${f.format(afterPoint)}P';
               return MaxWidthBox(
@@ -877,34 +838,13 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
                                   ],
                                 ),
                               ),
-                              Expanded(
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                      color: Colors.white),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(0.0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: keys
-                                          .map(
-                                            (x) => Row(
-                                              children: x.map((y) {
-                                                return Expanded(
-                                                  child: NumberPadWidget(
-                                                    textCtr: addPointCtr,
-                                                    label: y,
-                                                    onTap: (val) {},
-                                                    value: y,
-                                                  ),
-                                                );
-                                              }).toList(),
-                                            ),
-                                          )
-                                          .toList(),
-                                    ),
-                                  ),
+                              Obx(
+                                () => NumberPadWidget(
+                                  value: _customerCtr.usePotinValue.value,
+                                  onChanged: (newValue) {
+                                    _customerCtr.usePotinValue.value = newValue;
+                                    // inputValue.value = newValue;
+                                  },
                                 ),
                               ),
                             ],
@@ -932,19 +872,19 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
                                         isLoading.value = true;
                                         try {
                                           await _customerCtr
-                                              .fucAddOrUse(
+                                              .chargePoint(
                                                   customerId: customer.id,
                                                   point: addPoint.toInt())
                                               .then((value) {
                                             Get.back();
 
                                             isLoading.value = false;
-
+                                            _customerCtr.loadCustomerList();
                                             ShowDoneDialog(
                                                 context: context,
                                                 point: _customerCtr
-                                                    .enterAddPrice.value,
-                                                action: ActionType.add);
+                                                    .usePotinValue.value,
+                                                action: 'charge');
                                           });
                                         } catch (e) {
                                           print(e);
@@ -1026,7 +966,7 @@ class _CustomerDesktopState extends State<CustomerDesktop> {
 }
 
 class History extends StatelessWidget {
-  const History({
+  History({
     super.key,
     required this.groupedTransactions,
     required this.customer,
@@ -1036,6 +976,7 @@ class History extends StatelessWidget {
   final Map<String, List<Map<String, dynamic>>> groupedTransactions;
   final CustomerModel customer;
   final NumberFormat f;
+  final UserController _userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
@@ -1054,7 +995,7 @@ class History extends StatelessWidget {
                   ? const SizedBox()
                   : TextButton(
                       onPressed: () {
-                        Get.to(() => ShowRecordScreen(customerId: customer.id));
+                        Get.toNamed(Routes.record, arguments: customer.id);
                       },
                       child: const Text('더보기'))
             ],
@@ -1230,6 +1171,130 @@ class History extends StatelessWidget {
     );
   }
 
+  Future<dynamic> showPasswordDialog({
+    required BuildContext context,
+    required bool used,
+    required Map<String, dynamic> data,
+    required bool isCanceled,
+    required Function onConfirm,
+  }) {
+    var password = ''.obs;
+    var isLoading = false.obs;
+    int point = data['money'];
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 440,
+              maxHeight: MediaQuery.of(context).size.height * 0.8,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildCloseButton(),
+                  _buildHeader(data, point, isCanceled),
+                  const SizedBox(height: 30),
+                  PasswordDotsWidget(password: password),
+                  const SizedBox(height: 20),
+                  Text(
+                    isCanceled
+                        ? '취소를 되돌리려면 비밀번호를 입력해주세요'
+                        : '취소하려면 비밀번호를 입력해주세요',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 30),
+                  Obx(
+                    () => NumberPadWidget(
+                      value: password.value,
+                      hideDoubleZero: true,
+                      onChanged: (newValue) => _handlePasswordInput(
+                        newValue,
+                        password,
+                        isLoading,
+                        onConfirm,
+                        context,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCloseButton() {
+    return Align(
+      alignment: Alignment.topRight,
+      child: IconButton(
+        color: Colors.grey,
+        onPressed: () => Get.back(),
+        icon: const Icon(Icons.close),
+      ),
+    );
+  }
+
+  Widget _buildHeader(Map<String, dynamic> data, int point, bool isCanceled) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          DateFormat('yy년MM월dd일 HH시mm분ss초').format(
+            DateTime.parse(data['created_at'].toString()),
+          ),
+          style: descriptionTitle,
+        ),
+        Row(
+          children: [
+            Text(
+              '${f.format(point)}P',
+              style: menuTitle,
+            ),
+            if (isCanceled) ...[
+              const SizedBox(width: 10),
+              const Text(
+                '취소됨',
+                style: TextStyle(color: Colors.blue, fontSize: 22),
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _handlePasswordInput(
+    String newValue,
+    RxString password,
+    RxBool isLoading,
+    Function onConfirm,
+    BuildContext context,
+  ) async {
+    print(newValue);
+    password.value = newValue;
+    if (password.value.length == 4) {
+      if (password.value == _userController.user.value!.certificationPassword) {
+        if (!isLoading.value) {
+          isLoading.value = true;
+          await onConfirm();
+          isLoading.value = false;
+          Get.back();
+        }
+      } else {
+        password.value = '';
+      }
+    }
+  }
+
   Future<dynamic> MenuDialog(BuildContext context, Map<String, dynamic> data) {
     return showDialog(
         context: context,
@@ -1237,7 +1302,7 @@ class History extends StatelessWidget {
           return Dialog(
             child: BorderContainerWidget(
               w: 300,
-              h: 200,
+              h: 220,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
@@ -1253,28 +1318,56 @@ class History extends StatelessWidget {
                             icon: const Icon(Icons.close)),
                       ],
                     ),
-                    ButtonWidget(
-                        bgColor: Colors.white,
-                        onTap: () {
-                          Get.back();
-                          if (data['canceled'] == true) {
-                            AskCanceledToBack(context, data['money'],
-                                data['id'], data['type'] == 'add', data);
-                          } else {
-                            AskDeleteUsed(context, data['money'], data['id'],
-                                data['type'] == 'add', data);
-                          }
-                        },
-                        child: const Text('이 사용 취소하기')),
-                    const Divider(),
-                    ButtonWidget(
-                        bgColor: Colors.white,
-                        onTap: () {
-                          Get.back();
-                          var beforeMemo = data['memo'] ?? '';
-                          MemoDialog(context, data['id'], beforeMemo);
-                        },
-                        child: const Text('메모 남기기')),
+                    StateChangeButtonWidget(
+                      onTap: () async {
+                        Get.back();
+                        if (data['canceled'] == true) {
+                          showPasswordDialog(
+                            context: context,
+                            used: true,
+                            data: data,
+                            isCanceled: false,
+                            onConfirm: () => _customerCtr.cancleToBack(
+                              canceled: true,
+                              id: data['id'],
+                              point: data['money'],
+                              customerId: customer.id,
+                            ),
+                          );
+                        } else {
+                          showPasswordDialog(
+                            context: context,
+                            used: false,
+                            data: data,
+                            isCanceled: false,
+                            onConfirm: () => _customerCtr.useToCancle(
+                              canceled: false,
+                              id: data['id'],
+                              point: data['money'],
+                              customerId: customer.id,
+                            ),
+                          );
+                          // AskDeleteUsed(context, data['money'], data['id'],
+                          //     data['type'] == 'add', data);
+                        }
+                      },
+                      title: '이 결제 취소하기',
+                      icon: Icons.block,
+                      iconColor: Colors.red,
+                      color: Colors.yellow[100],
+                    ),
+                    Divider(),
+                    StateChangeButtonWidget(
+                      onTap: () async {
+                        Get.back();
+                        var beforeMemo = data['memo'] ?? '';
+                        MemoDialog(context, data['id'], beforeMemo);
+                      },
+                      title: '메모',
+                      icon: Icons.note_add_outlined,
+                      iconColor: Colors.green,
+                      color: Colors.green[100],
+                    ),
                   ],
                 ),
               ),
@@ -1290,12 +1383,15 @@ class History extends StatelessWidget {
         context: context,
         builder: (context) {
           return Dialog(
-            child: BorderContainerWidget(
-              w: 500,
-              h: 350,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 500,
+                maxHeight: MediaQuery.of(context).size.height * 0.2,
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -1314,437 +1410,53 @@ class History extends StatelessWidget {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                     const Gap(10),
-                    BorderContainerWidget(
-                      h: 150,
-                      color: Colors.grey[200],
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          maxLines: 5,
-                          controller: memoCtr,
-                          textInputAction: TextInputAction.done,
-                          onSubmitted: (_) async {
-                            await _customerCtr.fucAddMemo(
-                                id: id,
-                                customerId: customer.id,
-                                memo: memoCtr.text);
-                            Get.back();
-                          },
-                          decoration:
-                              const InputDecoration(border: InputBorder.none),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: BorderContainerWidget(
+                            h: 45,
+                            color: Colors.grey[200],
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextField(
+                                maxLines: 1,
+                                controller: memoCtr,
+                                textInputAction: TextInputAction.done,
+                                onSubmitted: (_) async {
+                                  await _customerCtr.addMemo(
+                                      id: id,
+                                      customerId: customer.id,
+                                      memo: memoCtr.text);
+                                  Get.back();
+                                },
+                                decoration: const InputDecoration(
+                                    border: InputBorder.none),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        const Gap(20),
+                        ButtonWidget(
+                            h: 45,
+                            onTap: () async {
+                              await _customerCtr.addMemo(
+                                  id: id,
+                                  customerId: customer.id,
+                                  memo: memoCtr.text);
+                              Get.back();
+                            },
+                            bgColor: Colors.blue,
+                            child: const Text(
+                              '저장',
+                              style: TextStyle(color: Colors.white),
+                            ))
+                      ],
                     ),
-                    const Gap(20),
-                    ButtonWidget(
-                        onTap: () async {
-                          await _customerCtr.fucAddMemo(
-                              id: id,
-                              customerId: customer.id,
-                              memo: memoCtr.text);
-                          Get.back();
-                        },
-                        bgColor: Colors.blue,
-                        hoverColor: Colors.blue[600],
-                        child: const Text(
-                          '저장하기',
-                          style: TextStyle(color: Colors.white),
-                        ))
                   ],
                 ),
               ),
             ),
           );
-        });
-  }
-
-  Future<dynamic> AskDeleteUsed(BuildContext context, int point, int id,
-      bool used, Map<String, dynamic> data) {
-    var isLoading = false;
-    var showText = '충전'; // used가 트루면 충전 false면 사용
-    if (used == false) {
-      showText = '사용';
-    }
-
-    var password = ''.obs;
-    const storage = FlutterSecureStorage();
-    TextEditingController passwordCtr = TextEditingController();
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-              child: BorderContainerWidget(
-                  w: 450,
-                  h: 500,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  IconButton(
-                                      color: Colors.grey,
-                                      onPressed: () {
-                                        Get.back();
-                                      },
-                                      icon: const Icon(Icons.close)),
-                                ],
-                              ),
-                              Text(
-                                DateFormat(
-                                  'yy년MM월dd일  HH시mm분ss초',
-                                ).format(DateTime.parse(
-                                    data['created_at'].toString())),
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                              Row(
-                                children: [
-                                  // CircleAvatar(
-                                  //   radius: 16,
-                                  //   backgroundColor: showText == '충전'
-                                  //       ? Colors.green[100]
-                                  //       : Colors.grey[100],
-                                  //   child: Icon(
-                                  //     showText == '충전'
-                                  //         ? Icons.add
-                                  //         : Icons.remove,
-                                  //     size: 18,
-                                  //     color: showText == '충전'
-                                  //         ? Colors.green
-                                  //         : Colors.grey,
-                                  //   ),
-                                  // ),
-                                  // const Gap(5),
-                                  Text(
-                                    '${f.format(point)}P',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 30),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Gap(10),
-                        SizedBox(
-                          height: 40,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: 4,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return Obx(() => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5),
-                                      child: CircleAvatar(
-                                        radius: 16,
-                                        backgroundColor:
-                                            password.value.length > index
-                                                ? Colors.black
-                                                : Colors.grey[300],
-                                      ),
-                                    ));
-                              }),
-                        ),
-                        const Gap(10),
-                        const Text(
-                          '취소하려면 비밀번호를 입력해주세요',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
-                        ),
-                        Container(
-                          width: 350,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: keys
-                                  .map(
-                                    (x) => Row(
-                                      children: x.map((y) {
-                                        return Expanded(
-                                          child: NumberPadWidget(
-                                            textCtr: passwordCtr,
-                                            label: y,
-                                            ratio: 3,
-                                            onTap: (val) async {
-                                              password.value = password + val;
-                                              print(password);
-                                              if (password.value.length == 4) {
-                                                if (password.value == '0000') {
-                                                  print('비번 확인');
-                                                  if (isLoading == false) {
-                                                    isLoading = true;
-                                                    await _customerCtr
-                                                        .fucCancleUse(
-                                                            used: used,
-                                                            id: id,
-                                                            point: point,
-                                                            customerId:
-                                                                customer.id);
-
-                                                    isLoading = false;
-                                                  }
-
-                                                  Get.back();
-                                                } else {
-                                                  print('비번 실패');
-                                                  password.value = '';
-                                                }
-                                              }
-                                            },
-                                            value: y,
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ),
-                        ),
-                        // Row(
-                        //   children: [
-                        //     Expanded(
-                        //       child: kBtn(
-                        //           bgColor: subColor,
-                        //           onTap: () {
-                        //             Get.back();
-                        //           },
-                        //           child: const Center(
-                        //             child: Text(
-                        //               '아니요',
-                        //               style: TextStyle(color: sgColor),
-                        //             ),
-                        //           )),
-                        //     ),
-                        //     const Gap(15),
-                        //     Expanded(
-                        //       child: kBtn(
-                        //           onTap: () async {
-                        //             if (isLoading == false) {
-                        //               isLoading = true;
-                        //               await customerCtr.fucCancleUse(
-                        //                   used: used,
-                        //                   id: id,
-                        //                   point: point,
-                        //                   customerId: customer.id);
-
-                        //               isLoading = false;
-                        //               Get.back();
-                        //             }
-                        //           },
-                        //           child: const Center(
-                        //             child: Text('네'),
-                        //           )),
-                        //     ),
-                        //   ],
-                        // )
-                      ],
-                    ),
-                  )));
-        });
-  }
-
-  Future<dynamic> AskCanceledToBack(BuildContext context, int point, int id,
-      bool used, Map<String, dynamic> data) {
-    var isLoading = false;
-    var showText = '충전을 취소 할까요?'; // used가 트루면 충전 false면 사용
-    if (used == false) {
-      showText = '사용을 취소 할까요?';
-    }
-
-    var password = ''.obs;
-    const storage = FlutterSecureStorage();
-    TextEditingController passwordCtr = TextEditingController();
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-              child: BorderContainerWidget(
-                  w: 450,
-                  h: 500,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                                color: Colors.grey,
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                icon: const Icon(Icons.close)),
-                          ],
-                        ),
-
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  DateFormat(
-                                    'yy년MM월dd일  HH시mm분ss초',
-                                  ).format(DateTime.parse(
-                                      data['created_at'].toString())),
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  '${f.format(point)}P',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 30),
-                                ),
-                                const Gap(10),
-                                const Text(
-                                  '취소됨',
-                                  style: TextStyle(
-                                      color: Colors.blue, fontSize: 22),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const Gap(10),
-                        SizedBox(
-                          height: 40,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: 4,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return Obx(() => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5),
-                                      child: CircleAvatar(
-                                        radius: 16,
-                                        backgroundColor:
-                                            password.value.length > index
-                                                ? Colors.black
-                                                : Colors.grey[300],
-                                      ),
-                                    ));
-                              }),
-                        ),
-                        const Gap(10),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 0),
-                          child: Text(
-                            '취소를 되돌리려면 비밀번호를 입력해주세요',
-                            style: TextStyle(fontSize: 18, color: Colors.grey),
-                          ),
-                        ),
-                        Container(
-                          width: 350,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: keys
-                                  .map(
-                                    (x) => Row(
-                                      children: x.map((y) {
-                                        return Expanded(
-                                          child: NumberPadWidget(
-                                            textCtr: passwordCtr,
-                                            label: y,
-                                            ratio: 3,
-                                            onTap: (val) async {
-                                              password.value = password + val;
-                                              print(password);
-                                              if (password.value.length == 4) {
-                                                if (password.value == '0000') {
-                                                  print('비번 확인');
-                                                  if (isLoading == false) {
-                                                    isLoading = true;
-                                                    await _customerCtr
-                                                        .fucCancleToBack(
-                                                            used: used,
-                                                            id: id,
-                                                            point: point,
-                                                            customerId:
-                                                                customer.id);
-
-                                                    isLoading = false;
-                                                    Get.back();
-                                                  }
-                                                } else {
-                                                  print('비번 실패');
-                                                  password.value = '';
-                                                }
-                                              }
-                                            },
-                                            value: y,
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ),
-                        ),
-                        // 네 아니요 버튼
-                        // Row(
-                        //   children: [
-                        //     Expanded(
-                        //       child: kBtn(
-                        //           bgColor: subColor,
-                        //           onTap: () {
-                        //             Get.back();
-                        //           },
-                        //           child: const Center(
-                        //             child: Text(
-                        //               '아니요',
-                        //               style: TextStyle(color: sgColor),
-                        //             ),
-                        //           )),
-                        //     ),
-                        //     const Gap(15),
-                        //     Expanded(
-                        //       child: kBtn(
-                        //           onTap: () async {
-                        //             if (isLoading == false) {
-                        //               isLoading = true;
-                        //               await customerCtr.fucCancleToBack(
-                        //                   used: used,
-                        //                   id: id,
-                        //                   point: point,
-                        //                   customerId: customer.id);
-
-                        //               isLoading = false;
-                        //               Get.back();
-                        //             }
-                        //           },
-                        //           child: const Center(
-                        //             child: Text('네'),
-                        //           )),
-                        //     ),
-                        //   ],
-                        // )
-                      ],
-                    ),
-                  )));
         });
   }
 }

@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
-import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
 import 'package:jangboo_flutter/app/supabase.dart';
-import 'package:jangboo_flutter/app/ui/web/user/edit_user_info_screen.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 
-final UserController _userCtr = Get.find<UserController>();
-
-class UserScreenDesktop extends StatefulWidget {
-  const UserScreenDesktop({super.key});
+class UserScreen extends StatefulWidget {
+  const UserScreen({super.key});
 
   @override
-  State<UserScreenDesktop> createState() => _UserScreenDesktopState();
+  State<UserScreen> createState() => _UserScreenState();
 }
 
-class _UserScreenDesktopState extends State<UserScreenDesktop> {
+class _UserScreenState extends State<UserScreen> {
   final AuthService _authService = Get.find<AuthService>();
+  final UserController _userCtr = Get.find<UserController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,10 +31,7 @@ class _UserScreenDesktopState extends State<UserScreenDesktop> {
                 height: 45,
                 child: ButtonWidget(
                     onTap: () async {
-                      Get.to(() => EditUserInfoScreen(
-                            userName: _userCtr.user.value!.name,
-                            storeName: _userCtr.user.value!.storeName,
-                          ));
+                      Get.toNamed(Routes.userEdit);
                     },
                     child: const Center(
                       child: Text('내 정보 수정'),

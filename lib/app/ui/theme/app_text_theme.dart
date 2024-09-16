@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 const menuTitle = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
+var descriptionTitle = TextStyle(fontSize: 18, color: Colors.grey[700]);
 
 const cardTitle =
     TextStyle(fontSize: 22, fontWeight: FontWeight.w700, height: 1.2);

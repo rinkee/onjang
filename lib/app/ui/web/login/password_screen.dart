@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:jangboo_flutter/app/data/service/auth_service.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
-import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/input_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
-import 'package:jangboo_flutter/app/ui/web/home/home_screen_desktop.dart';
+import 'package:jangboo_flutter/app/ui/web/home/home_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/login/login_screen.dart';
-import 'package:jangboo_flutter/app/supabase.dart';
-import 'package:responsive_framework/responsive_framework.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert'; // for the utf8.encode method
 
 class PasswordScreen extends StatefulWidget {
   PasswordScreen({super.key, required this.email});
@@ -25,6 +20,8 @@ class PasswordScreen extends StatefulWidget {
 }
 
 class _PasswordScreenState extends State<PasswordScreen> {
+  final AuthService _authService = Get.find<AuthService>();
+
   bool validatePassword(String value) {
     String pattern = r'^[^\s]{6,15}$';
     RegExp regExp = RegExp(pattern);
@@ -139,10 +136,10 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                 print('다음 화면으로');
                                 final UserController _userCtr =
                                     Get.find<UserController>();
-                                await _userCtr.signUp(
+                                await _authService.signUp(
                                     email: widget.email,
                                     password: passwordCtr.text);
-                                Get.offAll(() => const HomeScreenDesktop());
+                                Get.offAll(() => const HomeScreen());
                               } else {
                                 print('비번 확인 필요');
                               }

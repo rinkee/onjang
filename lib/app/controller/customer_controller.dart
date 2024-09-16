@@ -1,72 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jangboo_flutter/app/ui/widget/customer_card_widget.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
-import 'package:jangboo_flutter/app/controller/home_menu_controller.dart';
+import 'package:jangboo_flutter/app/data/enum/sort.dart';
 import 'package:jangboo_flutter/app/data/model/customer_model.dart';
 import 'package:jangboo_flutter/app/supabase.dart';
 
-enum ActionType {
-  add(
-      title: "충전하기",
-      state: "add",
-      buttonColor: Color.fromRGBO(35, 135, 39, 1),
-      iconColor: Color.fromARGB(255, 65, 179, 69)),
-  use(
-      title: "사용하기",
-      state: "use",
-      buttonColor: Color.fromRGBO(25, 118, 210, 1),
-      iconColor: Color.fromRGBO(82, 177, 254, 1)),
-  card(
-      title: "카드등록",
-      state: "card",
-      buttonColor: Colors.purple,
-      iconColor: Color.fromARGB(255, 127, 28, 144)),
-  record(
-      title: "기록",
-      state: "record",
-      buttonColor: Colors.black,
-      iconColor: Colors.black),
-  setting(
-      title: "설정",
-      state: "setting",
-      buttonColor: Colors.black,
-      iconColor: Colors.black),
-
-  favorite(
-      title: "즐겨찾기",
-      state: "favorite",
-      buttonColor: Colors.amber,
-      iconColor: Colors.amber);
-
-  final String title;
-  final String state;
-  final Color? buttonColor;
-  final Color? iconColor;
-  const ActionType({
-    required this.title,
-    required this.state,
-    required this.iconColor,
-    required this.buttonColor,
-  });
-}
-
-class CustomerContentController extends GetxController {
+class CustomerController extends GetxController {
   final UserController _userController = Get.find<UserController>();
-  static CustomerContentController get to => Get.find();
+  static CustomerController get to => Get.find();
   var currentCustomerIndex = 0;
   final RxList<CustomerModel> customerList = <CustomerModel>[].obs; // 검색용
   final RxList<CustomerModel> deletedCustomerList =
       <CustomerModel>[].obs; // 삭제된 리스트 확인용
   final RxList<String> companyList = <String>[].obs;
   final RxString selectedCompany = ''.obs;
+  final RxList<CustomerModel> searchResults = <CustomerModel>[].obs;
 
   final filteredItems = <CustomerModel>[].obs; // 검색용
   final showSearchScreen = false.obs; // 검색 화면을 보여줄지
   var type = '사용하기'.obs;
-  var enterUsePrice = ''.obs;
-  var enterAddPrice = ''.obs;
+  var addPointValue = ''.obs;
+  var usePotinValue = ''.obs;
   var coId = 0.obs;
   var coName = ''.obs;
   var coTeamName = ''.obs;
@@ -74,9 +29,8 @@ class CustomerContentController extends GetxController {
   var coCard = ''.obs;
   var coBarcode = ''.obs;
   var balance = 0.obs;
-  var seclectedMenu = ActionType.use;
+
   Rx<Color>? cardColor = Colors.white.obs;
-  final _authCtr = Get.put(UserController());
 
   final RxBool isLoading = false.obs;
   var changedCustomerList = false.obs;
@@ -88,35 +42,9 @@ class CustomerContentController extends GetxController {
   final itemsPerPage = 6.obs;
   final PageController pageController = PageController();
 
-  void resetPage() {
-    // currentPage.value = 0;
-    // pageController.jumpToPage(0);
-    setSelectedCompany(null);
-  }
-
-  void previousPage() {
-    if (currentPage > 0) {
-      pageController.previousPage(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void nextPage() {
-    if (hasNextPage()) {
-      pageController.nextPage(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  bool hasNextPage() {
-    final allItems = ['전체', ...companyList];
-    final pageCount = (allItems.length / itemsPerPage.value).ceil();
-    return currentPage < pageCount - 1;
-  }
+  // 고객 정렬
+  final Rx<SortCriteria> currentSortCriteria = SortCriteria.companyName.obs;
+  final Rx<SortOrder> currentSortOrder = SortOrder.descending.obs;
 
   @override
   void onInit() {
@@ -165,19 +93,84 @@ class CustomerContentController extends GetxController {
         .toSet()
         .toList();
     print("Updated company list: ${companyList.value}"); // 디버그 출력 추가
+    setSelectedCompany(null);
   }
 
   List<CustomerModel> get filteredCustomers {
-    if (selectedCompany.isEmpty) {
-      return customerList
-          .where((customer) => customer.state == 'active')
+    List<CustomerModel> filtered =
+        customerList.where((customer) => customer.state == 'active').toList();
+
+    if (selectedCompany.isNotEmpty) {
+      filtered = filtered
+          .where((customer) => customer.companyName == selectedCompany.value)
           .toList();
     }
-    return customerList
-        .where((customer) =>
-            customer.companyName == selectedCompany.value &&
-            customer.state == 'active')
-        .toList();
+
+    filtered.sort((a, b) {
+      int comparison;
+      switch (currentSortCriteria.value) {
+        case SortCriteria.companyName:
+          comparison = (a.companyName ?? '').compareTo(b.companyName ?? '');
+          break;
+
+        case SortCriteria.name:
+          comparison = a.name.compareTo(b.name);
+          break;
+        case SortCriteria.balance:
+          comparison = a.balance.compareTo(b.balance);
+          break;
+        // case SortCriteria.favorite:
+        //   comparison = a.favorite ? -1 : (b.favorite ? 1 : 0);
+        //   break;
+        // case SortCriteria.lastVisit:
+        //   comparison = a.lastVisit.compareTo(b.lastVisit);
+        //   break;
+        // case SortCriteria.createdAt:
+        //   comparison = a.createdAt.compareTo(b.createdAt);
+        //   break;
+
+        // case SortCriteria.updatedAt:
+        //   comparison = a.updatedAt.compareTo(b.updatedAt);
+        // break;
+      }
+      return currentSortOrder.value == SortOrder.ascending
+          ? comparison
+          : -comparison;
+    });
+
+    return filtered;
+  }
+
+  void changeSortCriteria(SortCriteria criteria) {
+    currentSortCriteria.value = criteria;
+    update(); // GetX의 상태 업데이트 트리거
+  }
+
+  void toggleSortOrder() {
+    currentSortOrder.value = currentSortOrder.value == SortOrder.ascending
+        ? SortOrder.descending
+        : SortOrder.ascending;
+    update();
+  }
+
+  String getSortCriteriaString(SortCriteria criteria) {
+    switch (criteria) {
+      case SortCriteria.companyName:
+        return '회사명';
+      case SortCriteria.name:
+        return '부서/이름명';
+      case SortCriteria.balance:
+        return '잔액';
+      // case SortCriteria.favorite:
+      //   return '즐겨찾기';
+      // case SortCriteria.lastVisit:
+      //   return '최근 방문일';
+      // case SortCriteria.createdAt:
+      //   return '생성일';
+
+      // case SortCriteria.updatedAt:
+      // return '수정일';
+    }
   }
 
   List<CustomerModel> get deletedCustomers {
@@ -212,12 +205,13 @@ class CustomerContentController extends GetxController {
     selectedCompany.value = company ?? '';
   }
 
-  Future fucAddCustomer({
+  Future addCustomer({
     required String co_team,
     String? co_name,
     String? co_phone,
   }) async {
-    final uid = _authCtr.user.value!.uid;
+    final authCtr = Get.put(UserController());
+    final uid = authCtr.user.value!.uid;
     print(uid);
     await supabase.from('customer').insert({
       'company_name': co_name,
@@ -230,42 +224,7 @@ class CustomerContentController extends GetxController {
     refreshCustomerList();
   }
 
-  Future setActiveCustomer({
-    required int customerId,
-  }) async {
-    await supabase
-        .from('customer')
-        .update({'state': 'active', 'when_delete': null}).eq('id', customerId);
-
-    refreshCustomerList();
-  }
-
-  Future setInactiveCustomer({
-    required int customerId,
-  }) async {
-    var whenDelte = DateTime.now().add(Duration(days: 30)).toIso8601String();
-    await supabase.from('customer').update(
-        {'state': 'inactive', 'when_delete': whenDelte}).eq('id', customerId);
-
-    refreshCustomerList();
-  }
-
-  Future setDeleteCustomer({
-    required int customerId,
-    String? co_phone,
-    String? co_barcode,
-  }) async {
-    var whenDelte = DateTime.now().add(Duration(days: 30)).toIso8601String();
-    await supabase.from('customer').update(
-        {'state': 'delete', 'when_delete': whenDelte}).eq('id', customerId);
-    await supabase
-        .from('deleted_customer')
-        .insert({'customer_id': customerId, 'when_delete': whenDelte});
-    // await supabase.from('customer').delete().match({'id': customerId});
-    refreshCustomerList();
-  }
-
-  Future fucEditCutomerInfo({
+  Future editCustomer({
     required int customerId,
     required String co_team_name,
     String? co_name,
@@ -284,49 +243,115 @@ class CustomerContentController extends GetxController {
     refreshCustomerList();
   }
 
-  List<CustomerModel> fucSearchCustomer(TextEditingController searchCtr) {
+  Future deleteCustomer({
+    required int customerId,
+    String? co_phone,
+    String? co_barcode,
+  }) async {
+    var whenDelte = DateTime.now().add(Duration(days: 30)).toIso8601String();
+    await supabase.from('customer').update(
+        {'state': 'delete', 'when_delete': whenDelte}).eq('id', customerId);
+    await supabase
+        .from('deleted_customer')
+        .insert({'customer_id': customerId, 'when_delete': whenDelte});
+    // await supabase.from('customer').delete().match({'id': customerId});
+    refreshCustomerList();
+  }
+
+  Future setActive({
+    required int customerId,
+  }) async {
+    await supabase
+        .from('customer')
+        .update({'state': 'active', 'when_delete': null}).eq('id', customerId);
+
+    refreshCustomerList();
+  }
+
+  Future setInactive({
+    required int customerId,
+  }) async {
+    var whenDelte = DateTime.now().add(Duration(days: 30)).toIso8601String();
+    await supabase.from('customer').update(
+        {'state': 'inactive', 'when_delete': whenDelte}).eq('id', customerId);
+
+    refreshCustomerList();
+  }
+
+  void search(TextEditingController searchCtr) {
     final searchText = searchCtr.text.toLowerCase();
     showSearchScreen.value = searchCtr.text.isNotEmpty;
     if (selectedCompany.value != '') {
       selectedCompany.value = '';
     }
 
-    var searchList = searchCustomers
-        .where((customer) =>
-            customer.state == 'active' &&
-                (customer.companyName.toLowerCase().contains(searchText)) ||
-            (customer.name.toLowerCase().contains(searchText)) ||
-            (customer.phone?.toLowerCase().toLowerCase().contains(searchText) ??
-                false) ||
-            (customer.barcode
-                    ?.toLowerCase()
-                    .toLowerCase()
-                    .contains(searchText) ??
-                false))
-        .toList();
+    searchResults.value = searchCustomers.where((customer) {
+      bool matches = customer.state == 'active' &&
+          (customer.companyName.toLowerCase().contains(searchText) ||
+              customer.name.toLowerCase().contains(searchText) ||
+              (customer.phone?.toLowerCase().contains(searchText) ?? false) ||
+              (customer.barcode?.toLowerCase().contains(searchText) ?? false));
 
-    final menuCtr = Get.find<HomeMenuController>();
-    if (menuCtr.menuType.value != HomeMenuType.all) {
-      menuCtr.menuType.value = HomeMenuType.all;
-    }
-    if (filteredItems.isNotEmpty) {
-      print(filteredItems.first.companyName);
+      if (matches) {
+        print('Matched customer: ${customer.name}, Search text: $searchText');
+      }
+
+      return matches;
+    }).toList();
+
+    print('Search text: $searchText');
+    print('Total matches: ${searchResults.length}');
+
+    if (searchResults.isNotEmpty) {
+      print('First match: ${searchResults.first.name}');
     }
 
-    return searchList;
+    update();
   }
 
-  Future fucAddOrUse({required int customerId, required int point}) async {
+  Future chargePoint({required int customerId, required int point}) async {
     var beforeBalance = balance.value;
     var enterBalance = point;
 
-    if (seclectedMenu.state == 'add') {
-      // 충전 일때
+    var newBalance = beforeBalance + enterBalance;
+    await supabase.from('balance_log').insert({
+      'money': enterBalance,
+      'type': 'add',
+      'customer_id': customerId,
+      'created_at': DateTime.now().toIso8601String()
+    }).then((value) async {
+      await supabase
+          .from('customer')
+          .update({'balance': newBalance}).eq('id', customerId);
+    });
 
-      var newBalance = beforeBalance + enterBalance;
+    balance.value = newBalance;
+  }
+
+  Future usePoint({required int customerId, required int point}) async {
+    var beforeBalance = balance.value;
+    var enterBalance = point;
+
+    // 사용 일때
+    var newBalance = beforeBalance - enterBalance;
+    if (newBalance < 0) {
+      print('잔액 부족');
       await supabase.from('balance_log').insert({
         'money': enterBalance,
-        'type': 'add',
+        'type': 'use',
+        'customer_id': customerId,
+        'created_at': DateTime.now().toIso8601String()
+      }).then((value) async {
+        await supabase
+            .from('customer')
+            .update({'balance': newBalance}).eq('id', customerId);
+      });
+
+      balance.value = newBalance;
+    } else {
+      await supabase.from('balance_log').insert({
+        'money': enterBalance,
+        'type': 'use',
         'customer_id': customerId,
         'created_at': DateTime.now().toIso8601String()
       }).then((value) async {
@@ -337,48 +362,17 @@ class CustomerContentController extends GetxController {
 
       balance.value = newBalance;
     }
-
-    if (seclectedMenu.state == 'use') {
-      // 사용 일때
-      var newBalance = beforeBalance - enterBalance;
-      if (newBalance < 0) {
-        print('잔액 부족');
-        await supabase.from('balance_log').insert({
-          'money': enterBalance,
-          'type': 'use',
-          'customer_id': customerId,
-          'created_at': DateTime.now().toIso8601String()
-        }).then((value) async {
-          await supabase
-              .from('customer')
-              .update({'balance': newBalance}).eq('id', customerId);
-        });
-
-        balance.value = newBalance;
-      } else {
-        await supabase.from('balance_log').insert({
-          'money': enterBalance,
-          'type': 'use',
-          'customer_id': customerId,
-          'created_at': DateTime.now().toIso8601String()
-        }).then((value) async {
-          await supabase
-              .from('customer')
-              .update({'balance': newBalance}).eq('id', customerId);
-        });
-
-        balance.value = newBalance;
-      }
-    }
   }
 
-  fucCancleUse(
-      {required bool used,
+  // 아래부터 부가기능
+  // 사용을 취소하는 기능
+  useToCancle(
+      {required bool canceled,
       required int id,
       required int point,
       required int customerId}) async {
     var newBalance = 0;
-    if (used) {
+    if (canceled) {
       // 사용이  충전이면
       newBalance = balance.value - point;
     } else {
@@ -392,14 +386,14 @@ class CustomerContentController extends GetxController {
     balance.value = newBalance;
   }
 
-  fucCancleToBack(
-      // 취소를 되돌리는 기능
-      {required bool used,
+  // 취소를 되돌리는 기능
+  cancleToBack(
+      {required bool canceled,
       required int id,
       required int point,
       required int customerId}) async {
     var newBalance = 0;
-    if (used) {
+    if (canceled) {
       // 사용이  충전이면
       newBalance = balance.value + point;
     } else {
@@ -413,7 +407,7 @@ class CustomerContentController extends GetxController {
     balance.value = newBalance;
   }
 
-  fucAddMemo({
+  addMemo({
     required int id,
     required int customerId,
     required String memo,
@@ -421,22 +415,10 @@ class CustomerContentController extends GetxController {
     await supabase.from('balance_log').update({'memo': memo}).eq('id', id);
   }
 
-  fucFavorite({required int customerId, required bool favorite}) async {
+  setFavorite({required int customerId, required bool favorite}) async {
     await supabase.from('customer').update({'favorite': favorite}).eq(
       'id',
       customerId,
     );
-  }
-
-  fucSetUpActionButton({required int balance}) {
-    if (balance == 0) {
-      seclectedMenu = ActionType.add;
-      type.value = ActionType.add.title;
-      cardColor!.value = ActionType.add.iconColor!;
-    } else {
-      type.value = ActionType.use.title;
-      cardColor!.value = ActionType.use.iconColor!;
-      seclectedMenu = ActionType.use;
-    }
   }
 }

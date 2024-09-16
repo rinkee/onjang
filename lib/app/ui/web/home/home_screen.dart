@@ -1,50 +1,34 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-
+import 'package:jangboo_flutter/app/data/enum/sort.dart';
+import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
-import 'package:jangboo_flutter/app/ui/web/customer/deleted_customer_screen.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
-import 'package:jangboo_flutter/app/ui/widget/icon_button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/customer_card_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
-import 'package:jangboo_flutter/app/ui/widget/number_pad_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/search_bar_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
-import 'package:jangboo_flutter/app/controller/customer_content_controller.dart';
-import 'package:jangboo_flutter/app/controller/home_menu_controller.dart';
-
-import 'package:jangboo_flutter/app/ui/web/login/login_screen.dart';
+import 'package:jangboo_flutter/app/controller/customer_controller.dart';
 import 'package:jangboo_flutter/app/data/model/customer_model.dart';
-import 'package:jangboo_flutter/app/ui/web/setting/setting_screen.dart';
-import 'package:jangboo_flutter/app/supabase.dart';
-import 'package:jangboo_flutter/app/ui/web/user/edit_user_info_screen.dart';
-import 'package:jangboo_flutter/app/ui/web/user/user_screen_desktop.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:timer_builder/timer_builder.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 
-class HomeScreenDesktop extends StatefulWidget {
-  const HomeScreenDesktop({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomeScreenDesktop> createState() => _HomeScreenDesktopState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
-  final menuCtr = Get.put(HomeMenuController());
+class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = Get.find<AuthService>();
   final UserController _userCtr = Get.find<UserController>();
 
-  final CustomerContentController _customerCtr =
-      Get.find<CustomerContentController>();
+  final CustomerController _customerCtr = Get.find<CustomerController>();
   // final isFavorited = false.obs;
 
   @override
@@ -54,33 +38,13 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   getCustomerMode(); // 비동기 메서드 호출
     // });
-    getCustomerModeGetStorage();
 
     _customerCtr.customerSearchCtr.addListener(() {
-      _customerCtr.fucSearchCustomer(_customerCtr.customerSearchCtr);
+      _customerCtr.search(_customerCtr.customerSearchCtr);
       // if (isFavorited.value == true) {
       //   isFavorited.value = false;
       // }
     });
-  }
-
-  var initCustomerMode = false.obs;
-
-  getCustomerModeGetStorage() async {
-    await GetStorage.init();
-    final box = GetStorage();
-    var tt = box.read('customerMode');
-    print(tt);
-    if (tt == null) {
-      box.write('customerMode', false);
-    } else {
-      if (tt == true) {
-        initCustomerMode.value = true;
-      } else {
-        initCustomerMode.value = false;
-      }
-      print(initCustomerMode.value);
-    }
   }
 
   TextStyle isClikedStyle =
@@ -108,23 +72,20 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
               ListTile(
                 title: Text(
                   '모두의 장부',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ),
               ListTile(
                 leading: const Icon(Icons.store),
                 title: Text('내정보'),
                 onTap: () {
-                  Get.to(() => EditUserInfoScreen(
-                      userName: _userCtr.user.value!.name,
-                      storeName: _userCtr.user.value!.storeName));
+                  Get.toNamed(Routes.userEdit);
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.block),
                 title: Text('비활성화 장부'),
                 onTap: () {
-                  Get.to(() => DeletedCustomerScreen());
+                  Get.toNamed(Routes.customerInactive);
                 },
               ),
               // ListTile(
@@ -136,7 +97,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                 leading: const Icon(Icons.settings_rounded),
                 title: const Text('설정'),
                 onTap: () {
-                  Get.to(() => SettingScreen());
+                  Get.toNamed(Routes.setting);
                 },
               ),
               Spacer(),
@@ -161,12 +122,27 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
           style: TextStyle(color: Colors.grey),
         ),
         actions: [
-          // Obx(
-          //   () => Text(
-          //     userCtr.storeName.value,
-          //     style: const TextStyle(color: Colors.black),
-          //   ),
-          // ),
+          Obx(() {
+            if (_userCtr.initCustomerMode.value) {
+              return Row(children: [
+                Text(
+                  '고객모드',
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                Gap(5),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 1),
+                  child: Icon(
+                    Icons.circle,
+                    size: 14,
+                    color: Colors.green,
+                  ),
+                )
+              ]);
+            }
+            return SizedBox();
+          }),
+          Gap(10),
           // Text(userCtr.uid.value),
           // const Gap(20),
           // Obx(() => Padding(
@@ -207,6 +183,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
           //     ],
           //   ),
           // ),
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: TimerBuilder.periodic(
@@ -295,6 +272,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 15, vertical: 10),
                                     label: Text(item),
+                                    selectedColor: menuColor,
                                     selected: item == '전체'
                                         ? _customerCtr.selectedCompany.isEmpty
                                         : _customerCtr.selectedCompany.value ==
@@ -323,7 +301,69 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                 }))
                             .toList(),
                       );
-                    })
+                    }),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 5, bottom: 15, top: 30),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.filter_alt_outlined,
+                          ),
+                          Gap(10),
+                          Text(
+                            '장부 정렬',
+                            style: titleText,
+                          ),
+                          Spacer(),
+                          Obx(() => IconButton(
+                                icon: Icon(
+                                  _customerCtr.currentSortOrder.value ==
+                                          SortOrder.ascending
+                                      ? Icons.arrow_upward
+                                      : Icons.arrow_downward,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: _customerCtr.toggleSortOrder,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Obx(() => Container(
+                                padding: EdgeInsets.symmetric(horizontal: 14),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: menuColor),
+                                child: DropdownButtonFormField<SortCriteria>(
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black),
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                  value: _customerCtr.currentSortCriteria.value,
+                                  onChanged: (SortCriteria? newValue) {
+                                    if (newValue != null) {
+                                      _customerCtr.changeSortCriteria(newValue);
+                                    }
+                                  },
+                                  items: SortCriteria.values
+                                      .map<DropdownMenuItem<SortCriteria>>(
+                                          (SortCriteria value) {
+                                    return DropdownMenuItem<SortCriteria>(
+                                      value: value,
+                                      child: Text(_customerCtr
+                                          .getSortCriteriaString(value)),
+                                    );
+                                  }).toList(),
+                                ),
+                              )),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -396,7 +436,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                               ),
                               ButtonWidget(
                                 h: 50,
-                                bgColor: subColor,
+                                bgColor: menuColor,
                                 onTap: () {
                                   ShowMakeLedgerDialog(context: context);
                                 },
@@ -411,16 +451,17 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                       children: [
                                         Icon(
                                           Icons.add_circle_outline_rounded,
-                                          size: 26,
-                                          color: Colors.blue[300],
+                                          size: 24,
+                                          color: Colors.black,
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.all(8.0),
+                                          padding: EdgeInsets.only(
+                                              bottom: 3, left: 8),
                                           child: Text(
                                             '장부 추가',
                                             style: TextStyle(
                                                 fontSize: 17,
-                                                color: Colors.blue[400],
+                                                color: Colors.black,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -512,7 +553,7 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                                     print('notE');
                                     try {
                                       _customerCtr
-                                          .fucAddCustomer(
+                                          .addCustomer(
                                         co_name: company,
                                         co_team: name,
                                         co_phone: phone,
@@ -542,134 +583,11 @@ class _HomeScreenDesktopState extends State<HomeScreenDesktop> {
                   )));
         });
   }
-
-  Future<dynamic> ShowCustomerMode({
-    required BuildContext context,
-    required bool customerMode,
-  }) {
-    var password = ''.obs;
-
-    TextEditingController passwordCtr = TextEditingController();
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-              child: BorderContainerWidget(
-                  w: 350,
-                  h: 450,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                                color: Colors.grey,
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                icon: const Icon(Icons.close)),
-                          ],
-                        ),
-                        const Text(
-                          '고객용 장부 모드란?',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        const Gap(10),
-                        const Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(
-                              '금액 충전, 장부 수정, 삭제등 민감한 기능이 선택되는걸 방지하는 기능입니다.'),
-                        ),
-                        const Gap(10),
-                        SizedBox(
-                          height: 40,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: 4,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return Obx(() => Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: CircleAvatar(
-                                        backgroundColor:
-                                            password.value.length > index
-                                                ? Colors.black
-                                                : Colors.grey[300],
-                                      ),
-                                    ));
-                              }),
-                        ),
-                        Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: keys
-                                  .map(
-                                    (x) => Row(
-                                      children: x.map((y) {
-                                        return Expanded(
-                                          child: NumberPadWidget(
-                                            ratio: 3,
-                                            textCtr: passwordCtr,
-                                            label: y,
-                                            onTap: (val) async {
-                                              password.value = password + val;
-                                              print(password);
-                                              await GetStorage.init();
-                                              final box = GetStorage();
-                                              if (password.value.length == 4) {
-                                                if (password.value ==
-                                                    _userCtr.user.value!
-                                                        .certificationPassword) {
-                                                  print('비번 확인');
-                                                  if (customerMode == true) {
-                                                    box.write(
-                                                        'customerMode', false);
-                                                    initCustomerMode.value =
-                                                        false;
-                                                  } else {
-                                                    await box.write(
-                                                        'customerMode', true);
-
-                                                    initCustomerMode.value =
-                                                        true;
-                                                  }
-
-                                                  Get.back();
-                                                } else {
-                                                  print('비번 실패');
-                                                  password.value = '';
-                                                }
-                                              }
-                                            },
-                                            value: y,
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )));
-        });
-  }
 }
 
 class HomeContent extends StatelessWidget {
   HomeContent({super.key});
-  final _customerCtr = Get.find<CustomerContentController>();
+  final _customerCtr = Get.find<CustomerController>();
 
   @override
   Widget build(BuildContext context) {
@@ -681,17 +599,14 @@ class HomeContent extends StatelessWidget {
       if (_customerCtr.showSearchScreen.value == true) {
         return Expanded(
           child: GridView.builder(
-            itemCount: _customerCtr
-                .fucSearchCustomer(_customerCtr.customerSearchCtr)
-                .length,
+            itemCount: _customerCtr.searchResults.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount: 2,
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
                 mainAxisExtent: 140),
             itemBuilder: (context, index) {
-              CustomerModel customer = _customerCtr
-                  .fucSearchCustomer(_customerCtr.customerSearchCtr)[index];
+              CustomerModel customer = _customerCtr.searchResults[index];
               return CustomerCardWidget(customer: customer);
             },
           ),
@@ -723,6 +638,7 @@ class HomeContent extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 80),
               child: BorderContainerWidget(
+                color: Colors.grey[100],
                 h: 160,
                 child: Padding(
                   padding: const EdgeInsets.all(30.0),
@@ -817,7 +733,7 @@ class HomeContent extends StatelessWidget {
                                     print('notE');
                                     try {
                                       _customerCtr
-                                          .fucAddCustomer(
+                                          .addCustomer(
                                         co_name: company,
                                         co_team: name,
                                         co_phone: phone,

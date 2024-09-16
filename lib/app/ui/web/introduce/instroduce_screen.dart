@@ -1,26 +1,24 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/ui/web/demo/demo_home.dart';
 import 'package:jangboo_flutter/app/ui/web/login/login_screen.dart';
-import 'package:motion/motion.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'dart:async';
 
-class IntroduceLayout extends StatefulWidget {
-  const IntroduceLayout({super.key});
+class IntroduceScreen extends StatefulWidget {
+  const IntroduceScreen({super.key});
 
   @override
-  State<IntroduceLayout> createState() => _IntroduceLayoutState();
+  State<IntroduceScreen> createState() => _IntroduceScreenState();
 }
 
-class _IntroduceLayoutState extends State<IntroduceLayout> {
+class _IntroduceScreenState extends State<IntroduceScreen> {
   TextStyle titleStyle = const TextStyle(
     fontSize: 40,
     fontWeight: FontWeight.bold,
@@ -72,7 +70,9 @@ class _IntroduceLayoutState extends State<IntroduceLayout> {
                     ),
                     const Spacer(),
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.toNamed(Routes.login);
+                        },
                         child: const Text(
                           '로그인',
                           style: TextStyle(fontWeight: FontWeight.bold),
@@ -138,7 +138,7 @@ class _IntroduceLayoutState extends State<IntroduceLayout> {
                                 bgColor: Colors.blue,
                                 hoverColor: Colors.blue[600],
                                 onTap: () {
-                                  Get.to(() => const DemoHome());
+                                  Get.toNamed(Routes.demoHome);
                                 },
                                 child: const Text(
                                   '체험하기',
@@ -150,7 +150,7 @@ class _IntroduceLayoutState extends State<IntroduceLayout> {
                                 bgColor: Colors.white,
                                 w: 150,
                                 onTap: () {
-                                  Get.to(() => const LoginScreen());
+                                  Get.toNamed(Routes.login);
                                 },
                                 child: const Text(
                                   '시작하기',

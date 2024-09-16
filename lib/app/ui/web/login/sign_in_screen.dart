@@ -4,12 +4,10 @@ import 'package:get/get.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_sizes.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
-import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/input_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
-import 'package:jangboo_flutter/app/controller/user_controller.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
-import 'package:jangboo_flutter/app/ui/web/home/home_screen_desktop.dart';
+import 'package:jangboo_flutter/app/ui/web/home/home_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/login/login_screen.dart';
 import 'package:jangboo_flutter/app/supabase.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -17,14 +15,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert'; // for the utf8.encode method
 
-class SingInScreen extends StatefulWidget {
-  const SingInScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
   @override
-  State<SingInScreen> createState() => _SingInScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SingInScreenState extends State<SingInScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     // TODO: implement initState
@@ -36,7 +34,7 @@ class _SingInScreenState extends State<SingInScreen> {
     supabase.auth.onAuthStateChange.listen((data) {
       final event = data.event;
       if (event == AuthChangeEvent.signedIn) {
-        Get.off(const HomeScreenDesktop());
+        Get.off(const HomeScreen());
         print('crtUser : ${supabase.auth.currentUser}');
       }
     });
@@ -50,10 +48,10 @@ class _SingInScreenState extends State<SingInScreen> {
 
     final session = supabase.auth.currentSession;
     if (session != null) {
-      Get.to(const HomeScreenDesktop());
+      Get.toNamed(Routes.home);
       print('crtUser : ${supabase.auth.currentUser}');
     } else {
-      Get.to(const SingInScreen());
+      Get.toNamed(Routes.signIn);
       print('crtUser : ${supabase.auth.currentUser}');
     }
   }
@@ -385,8 +383,8 @@ class _SingInScreenState extends State<SingInScreen> {
                                 //     passwordHash: passwordHash,
                                 //     store_name: storeNameCtr.text);
 
-                                Get.toNamed(
-                                    Routes.Home); // print(result['message']);
+                                Get.toNamed(Routes
+                                    .initial); // print(result['message']);
                                 // if (result == 'error') {
                                 //   emailCtr.clear();
                                 //   emailHintText = '이미 존재하는 번호입니다';

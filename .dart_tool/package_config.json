@@ -188,6 +188,12 @@
       "languageVersion": "2.16"
     },
     {
+      "name": "google_fonts",
+      "rootUri": "file:///Users/seong/.pub-cache/hosted/pub.dev/google_fonts-6.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
       "name": "gotrue",
       "rootUri": "file:///Users/seong/.pub-cache/hosted/pub.dev/gotrue-2.8.4",
       "packageUri": "lib/",
@@ -626,7 +632,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2024-08-25T06:05:56.632032Z",
+  "generated": "2024-09-14T07:14:48.825998Z",
   "generator": "pub",
   "generatorVersion": "3.5.1",
   "flutterRoot": "file:///Users/seong/flutter",

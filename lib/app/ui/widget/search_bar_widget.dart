@@ -4,13 +4,12 @@ import 'package:get/get.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_sizes.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
-import 'package:jangboo_flutter/app/controller/customer_content_controller.dart';
-import 'package:jangboo_flutter/app/controller/home_menu_controller.dart';
+import 'package:jangboo_flutter/app/controller/customer_controller.dart';
 
 class SearchBarWidget extends StatelessWidget {
   SearchBarWidget({super.key});
 
-  final _customerCtr = Get.find<CustomerContentController>();
+  final _customerCtr = Get.find<CustomerController>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +35,8 @@ class SearchBarWidget extends StatelessWidget {
                     border: InputBorder.none,
                     hintText: '이름, 번호, 바코드로 검색'),
                 controller: _customerCtr.customerSearchCtr,
-                onChanged: (_) => _customerCtr
-                    .fucSearchCustomer(_customerCtr.customerSearchCtr),
+                onChanged: (_) =>
+                    _customerCtr.search(_customerCtr.customerSearchCtr),
               )),
               IconButton(
                   onPressed: () {

@@ -4,3 +4,4 @@ import 'package:intl/intl.dart';
 const sgColor = Color.fromRGBO(0, 136, 255, 1); // blue
 const subColor = Color.fromRGBO(182, 221, 255, 1); // blue
 
+const menuColor = Color.fromRGBO(212, 223, 245, 1);

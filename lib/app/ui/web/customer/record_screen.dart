@@ -5,8 +5,8 @@ import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/supabase.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 
-class ShowRecordScreen extends StatelessWidget {
-  const ShowRecordScreen({super.key, required this.customerId});
+class RecordScreen extends StatelessWidget {
+  const RecordScreen({super.key, required this.customerId});
 
   final int customerId;
 

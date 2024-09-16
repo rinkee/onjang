@@ -1,28 +1,14 @@
-import 'dart:io';
-
-import 'package:desktop_window/desktop_window.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
-
+import 'package:google_fonts/google_fonts.dart';
+import 'package:jangboo_flutter/app/controller/setting_controller.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
-
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
-import 'package:jangboo_flutter/app/controller/customer_content_controller.dart';
-import 'package:jangboo_flutter/app/controller/home_menu_controller.dart';
-import 'package:jangboo_flutter/app/ui/web/demo/demo_home.dart';
-import 'package:jangboo_flutter/app/ui/web/home/home_screen_desktop.dart';
-import 'package:jangboo_flutter/app/ui/web/introduce/instroduceLayout.dart';
-import 'package:jangboo_flutter/app/ui/web/introduce/introduceScreen.dart';
-import 'package:jangboo_flutter/app/ui/web/login/login_screen.dart';
-import 'package:jangboo_flutter/app/ui/web/login/sign_in_screen.dart';
-
-import 'package:jangboo_flutter/app/initial_screen.dart';
+import 'package:jangboo_flutter/app/controller/customer_controller.dart';
 import 'package:motion/motion.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -45,8 +31,8 @@ void main() async {
   );
   await Get.putAsync(() => AuthService().init());
   Get.put(UserController());
-  Get.put(HomeMenuController());
-  Get.put(CustomerContentController());
+  Get.put(CustomerController());
+  Get.put(SettingController());
 
   runApp(const MyApp());
 }
@@ -57,8 +43,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return GetMaterialApp(
-      initialRoute: Routes.INITIAL,
+      initialRoute: Routes.initial,
       getPages: AppPages.pages,
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
@@ -71,6 +58,7 @@ class MyApp extends StatelessWidget {
         Locale('ko', 'KR'),
       ],
       theme: ThemeData(
+          textTheme: GoogleFonts.notoSansNKoTextTheme(textTheme),
           colorScheme: ColorScheme.fromSeed(
             seedColor: sgColor,
             background: Colors.white,
@@ -78,10 +66,10 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           useMaterial3: true,
           appBarTheme: AppBarTheme(
-              titleTextStyle: TextStyle(
+              titleTextStyle: GoogleFonts.notoSansNKo(
                 color: Colors.white,
                 fontSize: 20,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w900,
               ),
               iconTheme: IconThemeData(color: Colors.grey),
               backgroundColor: Colors.grey[900])),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
@@ -65,6 +66,10 @@ class _InputWidgetState extends State<InputWidget> {
                         onTap: widget.onTap,
                         obscureText: showPassword.value,
                         onChanged: widget.onChanged,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.deny(
+                              RegExp(r'[\s-]')), // 공백과 하이픈을 모두 거부합니다
+                        ],
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintStyle: const TextStyle(fontSize: 14),

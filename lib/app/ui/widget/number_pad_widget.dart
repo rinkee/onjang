@@ -5,84 +5,90 @@ final keys = [
   ['1', '2', '3'],
   ['4', '5', '6'],
   ['7', '8', '9'],
-  ['00', '0', const Icon(Icons.keyboard_backspace)],
+  ['00', '0', Icon(Icons.backspace)],
 ];
 
-class NumberPadWidget extends StatefulWidget {
-  NumberPadWidget({
-    super.key,
-    required this.label,
-    required this.onTap,
+class NumberPadWidget extends StatelessWidget {
+  const NumberPadWidget({
+    Key? key,
     required this.value,
-    required this.textCtr,
-    this.ratio,
-  });
-  final dynamic label;
-  final dynamic value;
-  final ValueSetter<dynamic> onTap;
-  final TextEditingController textCtr;
-  double? ratio;
+    required this.onChanged,
+    this.maxLength,
+    this.aspectRatio = 2.0,
+    this.backgroundColor = Colors.white,
+    this.numberStyle = const TextStyle(fontSize: 20.0),
+    this.hideDoubleZero = false,
+  }) : super(key: key);
 
-  @override
-  _NumberPadWidgetState createState() => _NumberPadWidgetState();
-}
-
-class _NumberPadWidgetState extends State<NumberPadWidget> {
-  renderLabel() {
-    if (widget.label is String) {
-      return Text(
-        widget.label,
-        style: const TextStyle(
-          fontSize: 20.0,
-        ),
-      );
-    } else {
-      return widget.label;
-    }
-  }
-
-  keyPress() {
-    if (widget.label is String) {
-      // if (widget.value == '0' && widget.textCtr.text == '') {
-      //   print('0');
-      // } else {
-      //   // widget.textCtr.text = widget.textCtr.text + widget.value.toString();
-      // }
-      widget.textCtr.text = widget.textCtr.text + widget.value.toString();
-    } else {
-      if (widget.textCtr.text != '') {
-        String newString =
-            widget.textCtr.text.substring(0, widget.textCtr.text.length - 1);
-        widget.textCtr.text = newString;
-      }
-    }
-  }
-
+  final String value;
+  final ValueChanged<String> onChanged;
+  final int? maxLength;
+  final double aspectRatio;
+  final Color backgroundColor;
+  final TextStyle numberStyle;
+  final bool hideDoubleZero;
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        hoverColor: Colors.grey[100],
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
-        onTap: () {
-          widget.onTap(widget.value);
-          HapticFeedback.lightImpact();
-          keyPress();
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-          child: AspectRatio(
-            aspectRatio: widget.ratio ?? 2,
-            child: Container(
-              color: Colors.white,
-              child: Center(
-                child: renderLabel(),
-              ),
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: backgroundColor,
+      ),
+      child: Column(
+        children: keys.map((row) {
+          return Row(
+            children: row.map((key) {
+              return Expanded(
+                child: _buildKey(key),
+              );
+            }).toList(),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildKey(dynamic key) {
+    if (hideDoubleZero && key == '00') {
+      return Expanded(
+        child: AspectRatio(
+          aspectRatio: aspectRatio,
+          child: Container(), // 빈 컨테이너로 '00' 키를 대체
+        ),
+      );
+    }
+
+    return AspectRatio(
+      aspectRatio: aspectRatio,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () => _onKeyTap(key),
+          child: Center(
+            child:
+                key is Widget ? key : Text(key.toString(), style: numberStyle),
           ),
         ),
       ),
     );
+  }
+
+  void _onKeyTap(dynamic key) {
+    HapticFeedback.lightImpact();
+    print(key);
+    if (key is String) {
+      if (key == '00' && !hideDoubleZero) {
+        onChanged(value + '00'); // '00' 추가
+      } else {
+        onChanged(value + key); // 일반 숫자 추가
+      }
+    } else if (key is Icon && key.icon == Icons.backspace) {
+      print('press back');
+      if (value.isNotEmpty) {
+        print('마지막 제거');
+        onChanged(value.substring(0, value.length - 1)); // 마지막 문자 제거
+      }
+    }
   }
 }

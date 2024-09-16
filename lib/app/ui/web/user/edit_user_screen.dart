@@ -6,22 +6,18 @@ import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/input_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
-import 'package:jangboo_flutter/app/controller/customer_content_controller.dart';
+import 'package:jangboo_flutter/app/controller/customer_controller.dart';
 import 'package:jangboo_flutter/app/supabase.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class EditUserInfoScreen extends StatefulWidget {
-  const EditUserInfoScreen(
-      {super.key, required this.userName, required this.storeName});
+class EditUserScreen extends StatefulWidget {
+  const EditUserScreen({super.key});
 
   @override
-  State<EditUserInfoScreen> createState() => _EditUserInfoScreenState();
-
-  final String userName;
-  final String storeName;
+  State<EditUserScreen> createState() => _EditUserScreenState();
 }
 
-class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
+class _EditUserScreenState extends State<EditUserScreen> {
   final UserController _userCtr = Get.find<UserController>();
 
   final nameCtr = TextEditingController();
@@ -31,8 +27,8 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    nameCtr.text = widget.userName;
-    storeNameCtr.text = widget.storeName;
+    nameCtr.text = _userCtr.user.value!.name;
+    storeNameCtr.text = _userCtr.user.value!.storeName;
   }
 
   @override
@@ -117,8 +113,6 @@ class _EditUserInfoScreenState extends State<EditUserInfoScreen> {
                                       )));
                             });
                       }
-
-                      // Get.to(() => const EditCustomerInfoScreen());
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),

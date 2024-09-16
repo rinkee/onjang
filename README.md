@@ -14,3 +14,8 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+
+2024.09.14 : v3 회사명 검색 추가, 홈 디자인 변경, 검색칸 왼쪽으로 이동
+2024.09.16 : 세팅컨트롤 생성, 넘버패드 컴포넌트화 유저아이디없으면 리다이렉트 추가, 폰트변경, 홈정렬 추가, 라우트설정추가,

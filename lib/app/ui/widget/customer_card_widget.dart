@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
-import 'package:jangboo_flutter/app/controller/user_controller.dart';
-import 'package:jangboo_flutter/app/controller/customer_content_controller.dart';
-import 'package:jangboo_flutter/app/controller/navigation_controller.dart';
-import 'package:jangboo_flutter/app/controller/home_menu_controller.dart';
-import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
-import 'package:jangboo_flutter/app/ui/web/customer/customer_desktop.dart';
+import 'package:jangboo_flutter/app/controller/customer_controller.dart';
 
-import 'package:jangboo_flutter/app/ui/web/home/home_screen_desktop.dart';
+import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 import 'package:jangboo_flutter/app/data/model/customer_model.dart';
-import 'package:jangboo_flutter/app/supabase.dart';
+import 'package:jangboo_flutter/app/ui/widget/state_change_button_widget.dart';
 
 class CustomerCardWidget extends StatelessWidget {
   CustomerCardWidget({
@@ -25,9 +20,7 @@ class CustomerCardWidget extends StatelessWidget {
   final CustomerModel customer;
   final isLoading = false.obs;
   bool? inDeletedScreen;
-
-  final menuCtr = Get.put(HomeMenuController());
-  final _customerCtr = Get.find<CustomerContentController>();
+  final _customerCtr = Get.find<CustomerController>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,48 +31,18 @@ class CustomerCardWidget extends StatelessWidget {
         if (inDeletedScreen == true) {
           askDialog(context, customer);
         } else {
+          FocusManager.instance.primaryFocus?.unfocus();
           _customerCtr.customerSearchCtr.clear();
           _customerCtr.customerSearchCtr.text = '';
-          FocusManager.instance.primaryFocus?.unfocus();
-
-          // customerCtr.currentCustomerIndex = index;
-          _customerCtr.fucSetUpActionButton(balance: customer.balance);
           _customerCtr.filteredItems.clear();
           _customerCtr.showSearchScreen.value = false;
-          _customerCtr.resetPage();
-          Get.to(CustomerDesktop(
-            customer: customer,
-          ));
+          Get.toNamed(Routes.customer, arguments: customer);
         }
       },
       child: Stack(
         children: [
-          if (customer.state == 'delete')
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                backgroundColor: Colors.red[100],
-                child: Center(
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.red[300],
-                  ),
-                ),
-              ),
-            ),
-          if (customer.state == 'inactive')
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                backgroundColor: Colors.yellow[100],
-                child: Center(
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.red[300],
-                  ),
-                ),
-              ),
-            ),
+          if (customer.state == 'delete' || customer.state == 'inactive')
+            _buildStateIcon(customer.state),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Column(
@@ -155,8 +118,7 @@ class CustomerCardWidget extends StatelessWidget {
                       children: [
                         StateChangeButtonWidget(
                           onTap: () async {
-                            await _customerCtr.setActiveCustomer(
-                                customerId: id);
+                            await _customerCtr.setActive(customerId: id);
                             Get.back();
                           },
                           title: '다시 사용하기',
@@ -168,8 +130,7 @@ class CustomerCardWidget extends StatelessWidget {
                         StateChangeButtonWidget(
                           onTap: () async {
                             if (customer.state != 'inactive') {
-                              await _customerCtr.setInactiveCustomer(
-                                  customerId: id);
+                              await _customerCtr.setInactive(customerId: id);
                               Get.back();
                             }
                           },
@@ -182,8 +143,7 @@ class CustomerCardWidget extends StatelessWidget {
                         StateChangeButtonWidget(
                           onTap: () async {
                             if (customer.state != 'delete') {
-                              await _customerCtr.setDeleteCustomer(
-                                  customerId: id);
+                              await _customerCtr.deleteCustomer(customerId: id);
                               Get.back();
                             }
                           },
@@ -249,8 +209,7 @@ class CustomerCardWidget extends StatelessWidget {
                                     Get.back();
 
                                     await _customerCtr
-                                        .setDeleteCustomer(
-                                            customerId: customer.id)
+                                        .deleteCustomer(customerId: customer.id)
                                         .then((value) {
                                       Get.back();
                                       Get.snackbar(
@@ -272,49 +231,35 @@ class CustomerCardWidget extends StatelessWidget {
                   )));
         });
   }
-}
 
-class StateChangeButtonWidget extends StatelessWidget {
-  const StateChangeButtonWidget({
-    super.key,
-    required this.onTap,
-    required this.title,
-    required this.icon,
-    this.color,
-    this.iconColor,
-  });
+  Widget _buildStateIcon(String state) {
+    IconData icon;
+    Color backgroundColor;
+    Color iconColor;
 
-  final GestureTapCallback onTap;
-  final String title;
-  final IconData icon;
-  final Color? color;
-  final Color? iconColor;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CircleAvatar(
-              child: Icon(
-                icon,
-                color: iconColor,
-              ),
-              backgroundColor: color,
-            ),
-            Center(
-              child: Text(
-                title,
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            const CircleAvatar(
-              backgroundColor: Colors.transparent,
-            )
-          ],
+    switch (state) {
+      case 'delete':
+        icon = Icons.delete;
+        backgroundColor = Colors.red[100]!;
+        iconColor = Colors.red[300]!;
+        break;
+      case 'inactive':
+        icon = Icons.block;
+        backgroundColor = Colors.yellow[100]!;
+        iconColor = Colors.red[300]!;
+        break;
+      default:
+        return SizedBox.shrink(); // 해당 상태가 아닐 경우 빈 위젯 반환
+    }
+
+    return Positioned(
+      right: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CircleAvatar(
+          radius: 20,
+          backgroundColor: backgroundColor,
+          child: Icon(icon, color: iconColor),
         ),
       ),
     );

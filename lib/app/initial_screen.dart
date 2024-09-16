@@ -24,14 +24,14 @@ class InitialScreen extends StatelessWidget {
     if (await _authService.isLoggedIn()) {
       await _userController.loadUserData();
       if (_userController.user.value != null) {
-        Get.offAllNamed(Routes.Home);
+        Get.offAllNamed(Routes.home);
         print('go to home');
       } else {
-        Get.offAllNamed(Routes.Introduce);
+        Get.offAllNamed(Routes.introduce);
         print('go to intro without user data');
       }
     } else {
-      Get.offAllNamed(Routes.Introduce);
+      Get.offAllNamed(Routes.introduce);
       print('go to intro without login data');
     }
   }

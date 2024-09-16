@@ -5,20 +5,20 @@ import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/input_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
-import 'package:jangboo_flutter/app/controller/customer_content_controller.dart';
+import 'package:jangboo_flutter/app/controller/customer_controller.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class EditCustomerInfoScreen extends StatefulWidget {
-  const EditCustomerInfoScreen({super.key, required this.customerId});
+class CustomerEditScreen extends StatefulWidget {
+  const CustomerEditScreen({super.key, required this.customerId});
 
   @override
-  State<EditCustomerInfoScreen> createState() => _EditCustomerInfoScreenState();
+  State<CustomerEditScreen> createState() => _CustomerEditScreenState();
   final int customerId;
 }
 
-class _EditCustomerInfoScreenState extends State<EditCustomerInfoScreen> {
-  final customerCtr = Get.put(CustomerContentController());
+class _CustomerEditScreenState extends State<CustomerEditScreen> {
+  final customerCtr = Get.put(CustomerController());
 
   final nameCtr = TextEditingController();
   final teamNameCtr = TextEditingController();
@@ -116,7 +116,7 @@ class _EditCustomerInfoScreenState extends State<EditCustomerInfoScreen> {
                       onTap: () async {
                         if (teamNameCtr.text != '' &&
                             teamNameCtr.text.isNotEmpty) {
-                          await customerCtr.fucEditCutomerInfo(
+                          await customerCtr.editCustomer(
                               customerId: widget.customerId,
                               co_team_name: teamNameCtr.text,
                               co_name: nameCtr.text,
@@ -160,8 +160,6 @@ class _EditCustomerInfoScreenState extends State<EditCustomerInfoScreen> {
                                         )));
                               });
                         }
-
-                        // Get.to(() => const EditCustomerInfoScreen());
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
