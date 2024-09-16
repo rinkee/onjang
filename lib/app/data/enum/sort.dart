@@ -1,11 +1,12 @@
 enum SortCriteria {
+  createdAt,
   companyName,
   name,
   balance,
 
   // favorite,
   // lastVisit,
-  // createdAt,
+
   // updatedAt,
 }
 

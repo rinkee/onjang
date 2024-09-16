@@ -14,6 +14,7 @@ import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
 import 'package:jangboo_flutter/app/controller/customer_controller.dart';
 import 'package:jangboo_flutter/app/data/model/customer_model.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:timer_builder/timer_builder.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 
@@ -207,164 +208,171 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           children: [
             // side content
-            Container(
-              width: 300,
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    // SearchBarWidget(),
-                    // Container(
-                    //   decoration: const BoxDecoration(
-                    //     borderRadius: BorderRadius.all(Radius.circular(20)),
-                    //   ),
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(10.0),
-                    //     child: Column(
-                    //       mainAxisAlignment: MainAxisAlignment.end,
-                    //       children: keys
-                    //           .map(
-                    //             (x) => Row(
-                    //               children: x.map((y) {
-                    //                 return Expanded(
-                    //                   child: NumberPadWidget(
-                    //                     ratio: 2,
-                    //                     textCtr: _customerCtr.customerSearchCtr,
-                    //                     label: y,
-                    //                     onTap: (val) {
-                    //                       print('onTap');
-                    //                       _customerCtr.showSearchScreen.value =
-                    //                           true;
-                    //                     },
-                    //                     value: y,
-                    //                   ),
-                    //                 );
-                    //               }).toList(),
-                    //             ),
-                    //           )
-                    //           .toList(),
-                    //     ),
-                    //   ),
-                    // ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 5, bottom: 20, top: 30),
-                      child: Row(
-                        children: [
-                          Icon(Icons.folder_outlined),
-                          Gap(10),
-                          Text(
-                            '회사명 검색',
-                            style: titleText,
-                          ),
-                        ],
+            SingleChildScrollView(
+              child: Container(
+                width: 300,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 10, top: 10, right: 10, bottom: 50),
+                  child: Column(
+                    children: [
+                      // SearchBarWidget(),
+                      // Container(
+                      //   decoration: const BoxDecoration(
+                      //     borderRadius: BorderRadius.all(Radius.circular(20)),
+                      //   ),
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.all(10.0),
+                      //     child: Column(
+                      //       mainAxisAlignment: MainAxisAlignment.end,
+                      //       children: keys
+                      //           .map(
+                      //             (x) => Row(
+                      //               children: x.map((y) {
+                      //                 return Expanded(
+                      //                   child: NumberPadWidget(
+                      //                     ratio: 2,
+                      //                     textCtr: _customerCtr.customerSearchCtr,
+                      //                     label: y,
+                      //                     onTap: (val) {
+                      //                       print('onTap');
+                      //                       _customerCtr.showSearchScreen.value =
+                      //                           true;
+                      //                     },
+                      //                     value: y,
+                      //                   ),
+                      //                 );
+                      //               }).toList(),
+                      //             ),
+                      //           )
+                      //           .toList(),
+                      //     ),
+                      //   ),
+                      // ),
+                      MaxWidthBox(maxWidth: 440, child: SearchBarWidget()),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 5, bottom: 20, top: 30),
+                        child: Row(
+                          children: [
+                            Icon(Icons.folder_outlined),
+                            Gap(10),
+                            Text(
+                              '회사명 검색',
+                              style: titleText,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Obx(() {
-                      final allItems = ['전체', ..._customerCtr.companyList];
-                      return Wrap(
-                        spacing: 8.0, // chip 간 가로 간격
-                        runSpacing: 4.0, // 줄 간 세로 간격
-                        children: allItems
-                            .map((item) => Obx(() {
-                                  return ChoiceChip(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 10),
-                                    label: Text(item),
-                                    selectedColor: menuColor,
-                                    selected: item == '전체'
-                                        ? _customerCtr.selectedCompany.isEmpty
-                                        : _customerCtr.selectedCompany.value ==
-                                            item,
-                                    onSelected: (bool selected) {
-                                      if (item == '전체') {
-                                        _customerCtr.setSelectedCompany(null);
-                                      } else {
-                                        _customerCtr.setSelectedCompany(
-                                            selected ? item : null);
+                      Obx(() {
+                        final allItems = ['전체', ..._customerCtr.companyList];
+                        return Wrap(
+                          spacing: 8.0, // chip 간 가로 간격
+                          runSpacing: 4.0, // 줄 간 세로 간격
+                          children: allItems
+                              .map((item) => Obx(() {
+                                    return ChoiceChip(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 10),
+                                      label: Text(item),
+                                      selectedColor: menuColor,
+                                      selected: item == '전체'
+                                          ? _customerCtr.selectedCompany.isEmpty
+                                          : _customerCtr
+                                                  .selectedCompany.value ==
+                                              item,
+                                      onSelected: (bool selected) {
+                                        if (item == '전체') {
+                                          _customerCtr.setSelectedCompany(null);
+                                        } else {
+                                          _customerCtr.setSelectedCompany(
+                                              selected ? item : null);
+                                        }
+                                      },
+                                      backgroundColor: Colors.grey[100],
+                                      side: BorderSide.none,
+                                      labelStyle: TextStyle(
+                                          color: (_customerCtr.selectedCompany
+                                                          .isEmpty &&
+                                                      item == '전체') ||
+                                                  _customerCtr.selectedCompany
+                                                          .value ==
+                                                      item
+                                              ? Colors.black
+                                              : Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    );
+                                  }))
+                              .toList(),
+                        );
+                      }),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 5, bottom: 15, top: 30),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.filter_alt_outlined,
+                            ),
+                            Gap(10),
+                            Text(
+                              '장부 정렬',
+                              style: titleText,
+                            ),
+                            Spacer(),
+                            Obx(() => IconButton(
+                                  icon: Icon(
+                                    _customerCtr.currentSortOrder.value ==
+                                            SortOrder.ascending
+                                        ? Icons.arrow_upward
+                                        : Icons.arrow_downward,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: _customerCtr.toggleSortOrder,
+                                )),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Obx(() => Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 14),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: menuColor),
+                                  child: DropdownButtonFormField<SortCriteria>(
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                    ),
+                                    value:
+                                        _customerCtr.currentSortCriteria.value,
+                                    onChanged: (SortCriteria? newValue) {
+                                      if (newValue != null) {
+                                        _customerCtr
+                                            .changeSortCriteria(newValue);
                                       }
                                     },
-                                    backgroundColor: Colors.grey[100],
-                                    side: BorderSide.none,
-                                    labelStyle: TextStyle(
-                                        color: (_customerCtr.selectedCompany
-                                                        .isEmpty &&
-                                                    item == '전체') ||
-                                                _customerCtr.selectedCompany
-                                                        .value ==
-                                                    item
-                                            ? Colors.black
-                                            : Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  );
-                                }))
-                            .toList(),
-                      );
-                    }),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 5, bottom: 15, top: 30),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.filter_alt_outlined,
+                                    items: SortCriteria.values
+                                        .map<DropdownMenuItem<SortCriteria>>(
+                                            (SortCriteria value) {
+                                      return DropdownMenuItem<SortCriteria>(
+                                        value: value,
+                                        child: Text(_customerCtr
+                                            .getSortCriteriaString(value)),
+                                      );
+                                    }).toList(),
+                                  ),
+                                )),
                           ),
-                          Gap(10),
-                          Text(
-                            '장부 정렬',
-                            style: titleText,
-                          ),
-                          Spacer(),
-                          Obx(() => IconButton(
-                                icon: Icon(
-                                  _customerCtr.currentSortOrder.value ==
-                                          SortOrder.ascending
-                                      ? Icons.arrow_upward
-                                      : Icons.arrow_downward,
-                                  color: Colors.grey,
-                                ),
-                                onPressed: _customerCtr.toggleSortOrder,
-                              )),
                         ],
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Obx(() => Container(
-                                padding: EdgeInsets.symmetric(horizontal: 14),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: menuColor),
-                                child: DropdownButtonFormField<SortCriteria>(
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                  ),
-                                  value: _customerCtr.currentSortCriteria.value,
-                                  onChanged: (SortCriteria? newValue) {
-                                    if (newValue != null) {
-                                      _customerCtr.changeSortCriteria(newValue);
-                                    }
-                                  },
-                                  items: SortCriteria.values
-                                      .map<DropdownMenuItem<SortCriteria>>(
-                                          (SortCriteria value) {
-                                    return DropdownMenuItem<SortCriteria>(
-                                      value: value,
-                                      child: Text(_customerCtr
-                                          .getSortCriteriaString(value)),
-                                    );
-                                  }).toList(),
-                                ),
-                              )),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -428,12 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               //     ],
                               //   ),
                               // ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                child: SizedBox(
-                                    width: 440, child: SearchBarWidget()),
-                              ),
+
                               ButtonWidget(
                                 h: 50,
                                 bgColor: menuColor,

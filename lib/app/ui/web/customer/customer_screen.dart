@@ -375,14 +375,17 @@ class _CustomerScreenState extends State<CustomerScreen> {
                           const Gap(20),
                           Obx(
                             () => Center(
-                              child: NumberPadWidget(
-                                value: _customerCtr.addPointValue.value,
-                                aspectRatio: 1.6,
-                                numberStyle: TextStyle(fontSize: 26),
-                                onChanged: (newValue) {
-                                  _customerCtr.addPointValue.value = newValue;
-                                  // inputValue.value = newValue;
-                                },
+                              child: MaxWidthBox(
+                                maxWidth: 600,
+                                child: NumberPadWidget(
+                                  value: _customerCtr.addPointValue.value,
+                                  aspectRatio: 1.6,
+                                  numberStyle: TextStyle(fontSize: 26),
+                                  onChanged: (newValue) {
+                                    _customerCtr.addPointValue.value = newValue;
+                                    // inputValue.value = newValue;
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -624,28 +627,31 @@ class _CustomerScreenState extends State<CustomerScreen> {
               ),
             ),
             const Gap(20),
-            Visibility(
-              visible: !initCustomerMode.value,
-              child: ButtonWidget(
-                  h: 50,
-                  onTap: () {
-                    _customerCtr.addPointValue.value = '';
+            SizedBox(
+              height: 50,
+              child: Visibility(
+                visible: !initCustomerMode.value,
+                child: ButtonWidget(
+                    h: 50,
+                    onTap: () {
+                      _customerCtr.addPointValue.value = '';
 
-                    ActionDialog();
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Row(
-                      children: [
-                        Icon(Icons.wallet_rounded, color: Colors.green),
-                        Gap(6),
-                        Text(
-                          '충전하기',
-                          style: TextStyle(),
-                        ),
-                      ],
-                    ),
-                  )),
+                      ActionDialog();
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        children: [
+                          Icon(Icons.wallet_rounded, color: Colors.green),
+                          Gap(6),
+                          Text(
+                            '충전하기',
+                            style: TextStyle(),
+                          ),
+                        ],
+                      ),
+                    )),
+              ),
             ),
           ],
         ),
@@ -727,190 +733,197 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
           return Padding(
             padding: const EdgeInsets.all(30.0),
-            child: Dialog(child: Obx(() {
-              var entryPoint = 0.0;
-              if (_customerCtr.usePotinValue.value != '') {
-                entryPoint = double.parse(_customerCtr.usePotinValue.value);
-              }
-              var showAddPoint = _customerCtr.usePotinValue.value == ''
-                  ? useText
-                  : '+ ${f.format(entryPoint)}P';
+            child: Dialog(
+                backgroundColor: Colors.white,
+                child: Obx(() {
+                  var entryPoint = 0.0;
+                  if (_customerCtr.usePotinValue.value != '') {
+                    entryPoint = double.parse(_customerCtr.usePotinValue.value);
+                  }
+                  var showAddPoint = _customerCtr.usePotinValue.value == ''
+                      ? useText
+                      : '+ ${f.format(entryPoint)}P';
 
-              var afterPoint = _customerCtr.balance.value +
-                  entryPoint +
-                  (entryPoint * addPercent.value / 100);
+                  var afterPoint = _customerCtr.balance.value +
+                      entryPoint +
+                      (entryPoint * addPercent.value / 100);
 
-              var addPoint = entryPoint + (entryPoint * addPercent.value / 100);
+                  var addPoint =
+                      entryPoint + (entryPoint * addPercent.value / 100);
 
-              var showAfterPoint = _customerCtr.usePotinValue.value == ''
-                  ? ''
-                  : '${f.format(afterPoint)}P';
-              return MaxWidthBox(
-                maxWidth: 700,
-                child: BorderContainerWidget(
-                    color: Colors.white,
-                    h: 500,
-                    child: Padding(
-                      padding: const EdgeInsets.all(50.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Gap(20),
-                                    Text(
-                                      '잔액 ${f.format(_customerCtr.balance.value)}P',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          height: 1.2,
-                                          color: Colors.grey[700]),
-                                    ),
-                                    Text(
-                                      showAddPoint,
-                                      style: const TextStyle(
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const Gap(30),
-                                    Text(
-                                      '추가 충전',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.grey[700]),
-                                    ),
-                                    const Gap(5),
-                                    Row(
-                                      children: [
-                                        BorderContainerWidget(
-                                            w: 60,
-                                            h: 40,
-                                            radius: 15,
-                                            color: Colors.grey[100],
-                                            child: Center(
-                                                child: Text(
-                                              '$addPercent%',
-                                              style: const TextStyle(
-                                                  color: sgColor),
-                                            ))),
-                                        const Gap(10),
-                                        ButtonWidget(
-                                            w: 60,
-                                            h: 40,
-                                            onTap: () {
-                                              if (addPercent.value > 0) {
-                                                addPercent.value--;
-                                              }
-                                            },
-                                            child: const Icon(Icons.remove)),
-                                        const Gap(5),
-                                        ButtonWidget(
-                                            w: 60,
-                                            h: 40,
-                                            onTap: () {
-                                              if (addPercent.value < 100) {
-                                                addPercent.value++;
-                                              }
-                                            },
-                                            child: const Icon(Icons.add)),
-                                      ],
-                                    ),
-                                    const Gap(30),
-                                    Text(
-                                      '충전 후 포인트',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          height: 1.2,
-                                          color: Colors.grey[700]),
-                                    ),
-                                    Text(
-                                      showAfterPoint,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    const Gap(20),
-                                  ],
-                                ),
-                              ),
-                              Obx(
-                                () => NumberPadWidget(
-                                  value: _customerCtr.usePotinValue.value,
-                                  onChanged: (newValue) {
-                                    _customerCtr.usePotinValue.value = newValue;
-                                    // inputValue.value = newValue;
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ButtonWidget(
-                                  onTap: () {
-                                    Get.back();
-                                    isLoading.value = false;
-                                  },
-                                  child: const AspectRatio(
-                                      aspectRatio: 1,
-                                      child: Icon(
-                                        Icons.close_rounded,
-                                        color: Colors.grey,
-                                      ))),
-                              SizedBox(
-                                width: 300,
-                                child: ButtonWidget(
-                                    onTap: () async {
-                                      if (isLoading.value == false) {
-                                        isLoading.value = true;
-                                        try {
-                                          await _customerCtr
-                                              .chargePoint(
-                                                  customerId: customer.id,
-                                                  point: addPoint.toInt())
-                                              .then((value) {
-                                            Get.back();
+                  var showAfterPoint = _customerCtr.usePotinValue.value == ''
+                      ? ''
+                      : '${f.format(afterPoint)}P';
 
-                                            isLoading.value = false;
-                                            _customerCtr.loadCustomerList();
-                                            ShowDoneDialog(
-                                                context: context,
-                                                point: _customerCtr
-                                                    .usePotinValue.value,
-                                                action: 'charge');
-                                          });
-                                        } catch (e) {
-                                          print(e);
-                                        }
-                                      } else {}
-                                    },
-                                    bgColor: Colors.green,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      child: Center(
-                                          child: Text(
-                                        title,
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                                    )),
-                              ),
-                            ],
-                          ),
-                        ],
+                  return ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 700,
+                        maxHeight: 550,
                       ),
-                    )),
-              );
-            })),
+                      child: Padding(
+                        padding: const EdgeInsets.all(50.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Gap(20),
+                                      Text(
+                                        '잔액 ${f.format(_customerCtr.balance.value)}P',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            height: 1.2,
+                                            color: Colors.grey[700]),
+                                      ),
+                                      Text(
+                                        showAddPoint,
+                                        style: const TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const Gap(30),
+                                      const Text(
+                                        '추가 충전',
+                                        style: TextStyle(
+                                            fontSize: 18, color: Colors.grey),
+                                      ),
+                                      const Gap(5),
+                                      Row(
+                                        children: [
+                                          BorderContainerWidget(
+                                              w: 60,
+                                              h: 40,
+                                              radius: 15,
+                                              color: Colors.grey[100],
+                                              child: Center(
+                                                  child: Text(
+                                                '$addPercent%',
+                                                style: const TextStyle(
+                                                    color: sgColor),
+                                              ))),
+                                          const Gap(10),
+                                          ButtonWidget(
+                                              w: 60,
+                                              h: 40,
+                                              onTap: () {
+                                                if (addPercent.value > 0) {
+                                                  addPercent.value--;
+                                                }
+                                              },
+                                              child: const Icon(Icons.remove)),
+                                          const Gap(5),
+                                          ButtonWidget(
+                                              w: 60,
+                                              h: 40,
+                                              onTap: () {
+                                                if (addPercent.value < 100) {
+                                                  addPercent.value++;
+                                                }
+                                              },
+                                              child: const Icon(Icons.add)),
+                                        ],
+                                      ),
+                                      const Gap(30),
+                                      Text(
+                                        '충전 후 포인트',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            height: 1.2,
+                                            color: Colors.grey[700]),
+                                      ),
+                                      Text(
+                                        showAfterPoint,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      const Gap(20),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Obx(
+                                    () => NumberPadWidget(
+                                      aspectRatio: 1.3,
+                                      value: _customerCtr.usePotinValue.value,
+                                      onChanged: (newValue) {
+                                        _customerCtr.usePotinValue.value =
+                                            newValue;
+                                        // inputValue.value = newValue;
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ButtonWidget(
+                                    onTap: () {
+                                      Get.back();
+                                      isLoading.value = false;
+                                    },
+                                    child: const AspectRatio(
+                                        aspectRatio: 1,
+                                        child: Icon(
+                                          Icons.close_rounded,
+                                          color: Colors.grey,
+                                        ))),
+                                SizedBox(
+                                  width: 300,
+                                  child: ButtonWidget(
+                                      onTap: () async {
+                                        if (isLoading.value == false) {
+                                          isLoading.value = true;
+                                          try {
+                                            await _customerCtr
+                                                .chargePoint(
+                                                    customerId: customer.id,
+                                                    point: addPoint.toInt())
+                                                .then((value) {
+                                              Get.back();
+
+                                              isLoading.value = false;
+                                              _customerCtr.loadCustomerList();
+                                              ShowDoneDialog(
+                                                  context: context,
+                                                  point: _customerCtr
+                                                      .usePotinValue.value,
+                                                  action: 'charge');
+                                            });
+                                          } catch (e) {
+                                            print(e);
+                                          }
+                                        } else {}
+                                      },
+                                      bgColor: Colors.green,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Center(
+                                            child: Text(
+                                          title,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ));
+                })),
           );
         });
   }
@@ -1417,7 +1430,8 @@ class History extends StatelessWidget {
                             h: 45,
                             color: Colors.grey[200],
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
                               child: TextField(
                                 maxLines: 1,
                                 controller: memoCtr,
@@ -1437,6 +1451,7 @@ class History extends StatelessWidget {
                         ),
                         const Gap(20),
                         ButtonWidget(
+                            w: 60,
                             h: 45,
                             onTap: () async {
                               await _customerCtr.addMemo(

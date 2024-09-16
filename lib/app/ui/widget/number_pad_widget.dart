@@ -77,7 +77,7 @@ class NumberPadWidget extends StatelessWidget {
   void _onKeyTap(dynamic key) {
     HapticFeedback.lightImpact();
     print(key);
-    if (key is String) {
+    if (key is String && value.length < 11) {
       if (key == '00' && !hideDoubleZero) {
         onChanged(value + '00'); // '00' 추가
       } else {

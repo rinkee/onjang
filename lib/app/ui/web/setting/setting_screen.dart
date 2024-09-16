@@ -91,7 +91,7 @@ class SettingScreen extends GetView<SettingController> {
           child: ConstrainedBox(
             constraints: BoxConstraints(
               maxWidth: 440,
-              maxHeight: MediaQuery.of(context).size.height * 0.8,
+              maxHeight: 600,
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -202,7 +202,7 @@ class SettingScreen extends GetView<SettingController> {
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxWidth: 440,
-                maxHeight: MediaQuery.of(context).size.height * 0.8,
+                maxHeight: 600,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20),

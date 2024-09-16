@@ -43,7 +43,7 @@ class CustomerController extends GetxController {
   final PageController pageController = PageController();
 
   // 고객 정렬
-  final Rx<SortCriteria> currentSortCriteria = SortCriteria.companyName.obs;
+  final Rx<SortCriteria> currentSortCriteria = SortCriteria.createdAt.obs;
   final Rx<SortOrder> currentSortOrder = SortOrder.descending.obs;
 
   @override
@@ -109,6 +109,9 @@ class CustomerController extends GetxController {
     filtered.sort((a, b) {
       int comparison;
       switch (currentSortCriteria.value) {
+        case SortCriteria.createdAt:
+          comparison = a.createdAt.compareTo(b.createdAt);
+          break;
         case SortCriteria.companyName:
           comparison = (a.companyName ?? '').compareTo(b.companyName ?? '');
           break;
@@ -124,9 +127,6 @@ class CustomerController extends GetxController {
         //   break;
         // case SortCriteria.lastVisit:
         //   comparison = a.lastVisit.compareTo(b.lastVisit);
-        //   break;
-        // case SortCriteria.createdAt:
-        //   comparison = a.createdAt.compareTo(b.createdAt);
         //   break;
 
         // case SortCriteria.updatedAt:
@@ -155,6 +155,8 @@ class CustomerController extends GetxController {
 
   String getSortCriteriaString(SortCriteria criteria) {
     switch (criteria) {
+      case SortCriteria.createdAt:
+        return '생성일';
       case SortCriteria.companyName:
         return '회사명';
       case SortCriteria.name:
@@ -165,8 +167,6 @@ class CustomerController extends GetxController {
       //   return '즐겨찾기';
       // case SortCriteria.lastVisit:
       //   return '최근 방문일';
-      // case SortCriteria.createdAt:
-      //   return '생성일';
 
       // case SortCriteria.updatedAt:
       // return '수정일';
