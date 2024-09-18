@@ -354,7 +354,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                           Obx(
                             () => Center(
                               child: MaxWidthBox(
-                                maxWidth: 500,
+                                maxWidth: 450,
                                 child: NumberPadWidget(
                                   value: _customerCtr.addPointValue.value,
                                   aspectRatio: 1.6,
@@ -370,8 +370,11 @@ class _CustomerScreenState extends State<CustomerScreen> {
                           const Spacer(),
                           ButtonWidget(
                             onTap: () async {
+                              var point =
+                                  int.parse(_customerCtr.addPointValue.value);
                               if (isLoading.value == false &&
-                                  _customerCtr.addPointValue.value != '') {
+                                  _customerCtr.addPointValue.value != '' &&
+                                  point != 0) {
                                 isLoading.value = true;
                                 try {
                                   await _customerCtr
@@ -453,13 +456,17 @@ class _CustomerScreenState extends State<CustomerScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CircleAvatar(
-                                  backgroundColor: subColor,
+                                  backgroundColor: action == 'charge'
+                                      ? Colors.green[100]
+                                      : Colors.blue[100],
                                   radius: 30,
                                   child: Icon(
                                     action == 'charge'
                                         ? Icons.wallet_rounded
                                         : Icons.check_rounded,
-                                    color: sgColor,
+                                    color: action == 'charge'
+                                        ? Colors.green
+                                        : sgColor,
                                   )),
                               const Gap(20),
                               Text(
@@ -484,7 +491,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                     context.pop();
                                     openDialog.value = false;
                                   },
-                                  bgColor: sgColor,
+                                  bgColor: action == 'charge'
+                                      ? Colors.green
+                                      : sgColor,
                                   child: const Center(
                                     child: Text(
                                       '확인',
@@ -901,7 +910,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                             horizontal: 20),
                                         child: Center(
                                             child: Text(
-                                          title,
+                                          '충전하기',
                                           style: const TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold),
@@ -1321,7 +1330,7 @@ class History extends StatelessWidget {
                             icon: const Icon(Icons.close)),
                       ],
                     ),
-                    Text('${data['canceled'].toString()}'),
+                    // Text('${data['canceled'].toString()}'),
                     StateChangeButtonWidget(
                       onTap: () async {
                         context.pop();
@@ -1395,7 +1404,7 @@ class History extends StatelessWidget {
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxWidth: 500,
-                maxHeight: MediaQuery.of(context).size.height * 0.2,
+                maxHeight: 180,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
