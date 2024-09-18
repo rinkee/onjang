@@ -12,6 +12,7 @@ import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 import 'package:jangboo_flutter/app/ui/web/home/home_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/login/login_screen.dart';
 import 'package:jangboo_flutter/app/supabase.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EmailScreen extends StatefulWidget {
@@ -185,6 +186,20 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: MaxWidthBox(
+          maxWidth: 1200,
+          child: GestureDetector(
+              onTap: () {
+                context.replaceNamed(Routes.home);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text('모두의장부'),
+              )),
+        ),
+        centerTitle: true,
+      ),
       body: Center(
         child: SizedBox(
           width: 300,
@@ -232,7 +247,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                 print('다음 화면으로');
 
                                 context.goNamed(Routes.password,
-                                    extra: {'email': emailCtr.text});
+                                    extra: emailCtr.text);
                               } else {
                                 print('이메일 확인 필요');
                               }
@@ -251,7 +266,7 @@ class _EmailScreenState extends State<EmailScreen> {
                     Center(
                       child: TextButton(
                           onPressed: () {
-                            Get.off(const LoginScreen());
+                            context.pushNamed(Routes.login);
                           },
                           child: const Text('아이디가 있으신가요? 로그인')),
                     ),

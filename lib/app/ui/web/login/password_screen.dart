@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
+import 'package:jangboo_flutter/app/ui/web/introduce/introduce_screen.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/input_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
@@ -9,11 +12,12 @@ import 'package:jangboo_flutter/app/controller/user_controller.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 import 'package:jangboo_flutter/app/ui/web/home/home_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/login/login_screen.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class PasswordScreen extends StatefulWidget {
-  PasswordScreen({super.key, required this.email});
+  const PasswordScreen({super.key, required this.email});
 
-  var email;
+  final String email;
 
   @override
   State<PasswordScreen> createState() => _PasswordScreenState();
@@ -79,6 +83,20 @@ class _PasswordScreenState extends State<PasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: MaxWidthBox(
+          maxWidth: 1200,
+          child: GestureDetector(
+              onTap: () {
+                context.replaceNamed(Routes.home);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text('모두의장부'),
+              )),
+        ),
+        centerTitle: true,
+      ),
       body: Center(
         child: SizedBox(
           width: 300,
@@ -139,7 +157,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
                                 await _authService.signUp(
                                     email: widget.email,
                                     password: passwordCtr.text);
-                                Get.offAll(() => const HomeScreen());
+
+                                context.goNamed(Routes.home);
                               } else {
                                 print('비번 확인 필요');
                               }
@@ -158,7 +177,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     Center(
                       child: TextButton(
                           onPressed: () {
-                            Get.offAll(const LoginScreen());
+                            context.goNamed(Routes.login);
                           },
                           child: const Text('아이디가 있으신가요? 로그인')),
                     ),

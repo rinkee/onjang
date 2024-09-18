@@ -538,17 +538,28 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               child: ButtonWidget(
                                   onTap: () async {
                                     context.pop();
-
+                                    print(customer.id);
                                     await _customerCtr
                                         .deleteCustomer(customerId: customer.id)
                                         .then((value) {
                                       context.pop();
-                                      Get.snackbar(
-                                          '${_customerCtr.coName.value} ${_customerCtr.coTeamName.value} ',
-                                          '삭제완료',
-                                          colorText: Colors.white,
-                                          backgroundColor: Colors.black,
-                                          snackPosition: SnackPosition.BOTTOM);
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          '[삭제 완료] ${_customerCtr.coName.value} ${_customerCtr.coTeamName.value}',
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                        duration: Duration(seconds: 3),
+                                        backgroundColor: Colors.green,
+                                        action: SnackBarAction(
+                                          label: '확인',
+                                          textColor: Colors.white,
+                                          onPressed: () {
+                                            context.pop();
+                                          }, //버튼 눌렀을때.
+                                        ),
+                                      ));
                                     });
                                   },
                                   child: const Center(

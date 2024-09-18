@@ -22,7 +22,7 @@ class UserController extends GetxController {
     // checkInitialAuthState();
     // setupAuthListener();
 
-    loadUserData();
+    await loadUserData();
     // loadUserDataInLocalStorage();
     getCustomerModeGetStorage();
   }

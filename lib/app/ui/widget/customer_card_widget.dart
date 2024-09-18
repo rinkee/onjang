@@ -126,6 +126,21 @@ class CustomerCardWidget extends StatelessWidget {
                           onTap: () async {
                             await _customerCtr.setActive(customerId: id);
                             context.pop();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                '장부 활성화 완료',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              duration: Duration(seconds: 3),
+                              backgroundColor: Colors.green,
+                              action: SnackBarAction(
+                                label: '확인',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  context.pop();
+                                }, //버튼 눌렀을때.
+                              ),
+                            ));
                           },
                           title: '다시 사용하기',
                           icon: Icons.replay,
@@ -138,6 +153,23 @@ class CustomerCardWidget extends StatelessWidget {
                             if (customer.state != 'inactive') {
                               await _customerCtr.setInactive(customerId: id);
                               context.pop();
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                  '장부 비활성화 완료',
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.black),
+                                ),
+                                duration: Duration(seconds: 3),
+                                backgroundColor: Colors.amber,
+                                action: SnackBarAction(
+                                  label: '확인',
+                                  textColor: Colors.black,
+                                  onPressed: () {
+                                    context.pop();
+                                  }, //버튼 눌렀을때.
+                                ),
+                              ));
                             }
                           },
                           title: '비활성화',
@@ -151,6 +183,23 @@ class CustomerCardWidget extends StatelessWidget {
                             if (customer.state != 'delete') {
                               await _customerCtr.deleteCustomer(customerId: id);
                               context.pop();
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                  '장부 삭제 완료 (30일 뒤 삭제됩니다)',
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                ),
+                                duration: Duration(seconds: 3),
+                                backgroundColor: Colors.red,
+                                action: SnackBarAction(
+                                  label: '확인',
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    context.pop();
+                                  }, //버튼 눌렀을때.
+                                ),
+                              ));
                             }
                           },
                           title: '삭제하기',

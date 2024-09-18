@@ -82,6 +82,27 @@ class CustomerController extends GetxController {
           .toList();
     }
 
+    var storedCustomer = window.localStorage['selectedCustomer'];
+    if (storedCustomer != null) {
+      var storedCustomerModel =
+          CustomerModel.fromJson(jsonDecode(storedCustomer));
+
+      // Find the matching customer in the customerList
+      var updatedCustomer = customerList.firstWhereOrNull(
+          (customer) => customer.id == storedCustomerModel.id);
+
+      if (updatedCustomer != null) {
+        // If a matching customer is found, update selectedCustomer
+        setSelectedCustomer(storedCustomerModel);
+        // Update localStorage with the latest data
+        window.localStorage['selectedCustomer'] =
+            jsonEncode(updatedCustomer.toJson());
+      } else {
+        // If no matching customer is found, use the stored data
+        setSelectedCustomer(storedCustomerModel);
+      }
+    }
+
     updateCompanyList();
     isLoading.value = false;
   }
@@ -96,6 +117,13 @@ class CustomerController extends GetxController {
 
     // 고객 정보를 localStorage에 저장
     window.localStorage['selectedCustomer'] = jsonEncode(customer.toJson());
+    print(selectedCustomer.value!.balance);
+  }
+
+  void updateSelectedCustomer(CustomerModel customer, int newBalance) {
+    selectedCustomer.value!.balance = newBalance;
+    var changedCutomer = selectedCustomer.value;
+    setSelectedCustomer(customer);
   }
 
   void updateCompanyList() {
@@ -340,7 +368,9 @@ class CustomerController extends GetxController {
     });
 
     balance.value = newBalance;
-    selectedCustomer.value!.balance = newBalance;
+    // selectedCustomer.value!.balance = newBalance;
+    // var changedCutomer = selectedCustomer.value;
+    // setSelectedCustomer(changedCutomer!);
   }
 
   Future usePoint({required int customerId, required int point}) async {
@@ -363,6 +393,9 @@ class CustomerController extends GetxController {
       });
 
       balance.value = newBalance;
+      // selectedCustomer.value!.balance = newBalance;
+      // var changedCutomer = selectedCustomer.value;
+      // setSelectedCustomer(changedCutomer!);
     } else {
       await supabase.from('balance_log').insert({
         'money': enterBalance,
@@ -376,7 +409,9 @@ class CustomerController extends GetxController {
       });
 
       balance.value = newBalance;
-      selectedCustomer.value!.balance = newBalance;
+      // selectedCustomer.value!.balance = newBalance;
+      // var changedCutomer = selectedCustomer.value;
+      // setSelectedCustomer(changedCutomer!);
     }
   }
 

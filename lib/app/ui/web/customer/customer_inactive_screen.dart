@@ -40,7 +40,7 @@ class CustomerInactiveScreen extends StatelessWidget {
                     child: GridView.builder(
                       itemCount: _customerCtr.deletedCustomers.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
+                          crossAxisCount: 3,
                           mainAxisSpacing: 10,
                           crossAxisSpacing: 10,
                           mainAxisExtent: 140),

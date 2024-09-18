@@ -32,13 +32,23 @@ class _EditUserScreenState extends State<EditUserScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     if (_userCtr.user.value != null) {
       uid = _userCtr.user.value!.uid;
       nameCtr.text = _userCtr.user.value!.name;
       storeNameCtr.text = _userCtr.user.value!.storeName;
     } else {
-      // 사용자 데이터가 없을 경우의 처리
       print('User data is not available');
+      _userCtr.loadUserData().then((_) {
+        print(_userCtr.user.value);
+        uid = _userCtr.user.value!.uid;
+        nameCtr.text = _userCtr.user.value!.name;
+        storeNameCtr.text = _userCtr.user.value!.storeName;
+      });
+
+      // 사용자 데이터가 없을 경우의 처리
+      // context.pop();
+
       // 여기에 추가적인 오류 처리 로직을 넣을 수 있습니다.
       // 예: 이전 화면으로 돌아가기, 오류 메시지 표시 등
     }

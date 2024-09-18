@@ -18,7 +18,8 @@ class CustomerEditScreen extends StatefulWidget {
 }
 
 class _CustomerEditScreenState extends State<CustomerEditScreen> {
-  final customerCtr = Get.put(CustomerController());
+  // final customerCtr = Get.put(CustomerController());
+  final customerCtr = Get.find<CustomerController>();
 
   final nameCtr = TextEditingController();
   final teamNameCtr = TextEditingController();

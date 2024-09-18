@@ -68,12 +68,13 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                   children: [
                     const Text(
                       '모두의 장부',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     const Spacer(),
                     TextButton(
                         onPressed: () {
-                          context.pushReplacementNamed(Routes.login);
+                          context.goNamed(Routes.login);
                         },
                         child: const Text(
                           '로그인',
@@ -152,7 +153,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                                 bgColor: Colors.white,
                                 w: 150,
                                 onTap: () {
-                                  context.pushReplacementNamed(Routes.login);
+                                  context.goNamed(Routes.login);
                                 },
                                 child: const Text(
                                   '시작하기',

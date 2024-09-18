@@ -11,7 +11,9 @@ import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 import 'package:jangboo_flutter/app/ui/web/login/email_screen.dart';
 import 'package:crypto/crypto.dart';
-import 'dart:convert'; // for the utf8.encode method
+import 'dart:convert';
+
+import 'package:responsive_framework/responsive_framework.dart'; // for the utf8.encode method
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,6 +34,20 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: MaxWidthBox(
+          maxWidth: 1200,
+          child: GestureDetector(
+              onTap: () {
+                context.replaceNamed(Routes.home);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text('모두의장부'),
+              )),
+        ),
+        centerTitle: true,
+      ),
       body: Center(
         child: SizedBox(
           width: 300,
@@ -235,7 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Center(
                 child: TextButton(
                     onPressed: () {
-                      context.go(Routes.email);
+                      context.goNamed(Routes.email);
                     },
                     child: const Text('처음이신가요? 회원가입하기')),
               ),
