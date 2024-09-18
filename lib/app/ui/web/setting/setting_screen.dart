@@ -194,120 +194,110 @@ class SettingScreen extends GetView<SettingController> {
       showText = '새로운 인증 비밀번호를 다시 입력해 주세요';
     }
 
-    TextEditingController passwordCtr = TextEditingController();
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            backgroundColor: Colors.white,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: 440,
-                maxHeight: 600,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 440,
+              maxHeight: 600,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        color: Colors.grey,
+                        onPressed: () => Navigator.of(context).pop(false),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        IconButton(
-                            color: Colors.grey,
-                            onPressed: () {
-                              context.pop(false);
-                            },
-                            icon: const Icon(Icons.close)),
+                        Obx(
+                          () => Visibility(
+                            visible: controller.showErrorText.value,
+                            child: const Text(
+                              '비밀번호를 다시 확인해주세요',
+                              style: TextStyle(color: Colors.red, fontSize: 20),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          showText,
+                          style: descriptionTitle,
+                        ),
+                        _buildPasswordDots(controller.passwordValue),
+                        Obx(() => NumberPadWidget(
+                              value: controller.passwordValue.value,
+                              onChanged: (newValue) {
+                                if (controller.passwordValue.value.length < 4) {
+                                  controller.passwordValue.value = newValue;
+                                  if (controller.passwordValue.value.length ==
+                                      4) {
+                                    handlePasswordCompletion(
+                                        context, count, beforePassword);
+                                  }
+                                }
+                              },
+                              hideDoubleZero: true,
+                            )),
                       ],
                     ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Obx(
-                            () => Visibility(
-                                visible: controller.showErrorText.value,
-                                child: const Text(
-                                  '비밀번호를 다시 확인해주세요',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 20),
-                                )),
-                          ),
-                          Text(
-                            showText,
-                            style: descriptionTitle,
-                          ),
-                          _buildPasswordDots(controller.passwordValue),
-
-                          Obx(() => NumberPadWidget(
-                                value: controller.passwordValue.value,
-                                onChanged: (newValue) =>
-                                    controller.handlePasswordInput(
-                                        newValue, count, beforePassword),
-                                hideDoubleZero: true,
-                              )),
-                          // NumberPadWidget(
-                          //   value: password.value,
-                          //   onChanged: (val) async {
-                          //     showErrorText.value = false;
-                          //     print(val is String);
-
-                          //     if (password.value.length < 4 && val is String) {
-                          //       password.value = password + val;
-                          //       print(password.value);
-                          //     } else {
-                          //       String newString = password.value
-                          //           .substring(0, password.value.length - 1);
-                          //       password.value = newString;
-                          //       print(password.value);
-                          //     }
-
-                          //     // print(password);
-                          //     if (count == 0 &&
-                          //         password.value == beforePassword) {
-                          //       // 유저가 입력한 비밀번호가
-                          //       // 기존 비밀번호과 같다면
-                          //       // 화면을 닫고 트루를 보냄
-                          //       Get.back(result: true);
-                          //     } else if (count == 0 &&
-                          //         password.value.length == 4 &&
-                          //         password.value != beforePassword) {
-                          //       password.value = '';
-                          //       showErrorText.value = true;
-                          //     }
-                          //     if (count == 1 && password.value.length == 4) {
-                          //       // 새로운 비밀번호를 입력 받고
-                          //       // 화면을 닫고 트루를 보냄
-                          //       controller.afterPassword.value = password.value;
-                          //       Get.back(result: true);
-                          //       print(controller.afterPassword);
-                          //     }
-                          //     if (count == 2 &&
-                          //         password.value.length == 4 &&
-                          //         password.value == controller.afterPassword) {
-                          //       // 다시 입력한 비밀번호와 입력한 비밀번호가
-                          //       // 같을때 화면을 닫고 트루를 보냄
-                          //       Get.back(result: true);
-                          //     } else if (count == 2 &&
-                          //         password.value.length == 4 &&
-                          //         password.value != controller.afterPassword) {
-                          //       // 다시 입력한 비밀번호가 전에 입력한 비밀번호와
-                          //       // 같지 않을때 에러 메세지와 입력한 비밀번호를
-                          //       // 초기화
-                          //       password.value = '';
-                          //       showErrorText.value = true;
-                          //     }
-                          //   },
-                          // ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
+  }
+
+  void handlePasswordCompletion(
+      BuildContext context, int count, String beforePassword) {
+    if (count == 0) {
+      if (controller.passwordValue.value == beforePassword) {
+        Navigator.of(context).pop(true);
+      } else {
+        controller.passwordValue.value = '';
+        controller.showErrorText.value = true;
+      }
+    } else if (count == 1) {
+      controller.afterPassword.value = controller.passwordValue.value;
+      Navigator.of(context).pop(true);
+    } else if (count == 2) {
+      if (controller.passwordValue.value == controller.afterPassword.value) {
+        Navigator.of(context).pop(true);
+        _userCtr.changeCertificationPassword(controller.passwordValue.value);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            '비밀번호 변경 완료',
+            style: TextStyle(fontSize: 20),
+          ),
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          action: SnackBarAction(
+            label: '확인',
+            textColor: Colors.white,
+            onPressed: () {
+              context.pop();
+            }, //버튼 눌렀을때.
+          ),
+        ));
+      } else {
+        controller.passwordValue.value = '';
+        controller.showErrorText.value = true;
+      }
+    }
   }
 }
 

@@ -34,6 +34,7 @@ class CustomerCardWidget extends StatelessWidget {
           askDialog(context, customer);
         } else {
           FocusManager.instance.primaryFocus?.unfocus();
+          context.goNamed('customer');
           _customerCtr.customerSearchCtr.clear();
           _customerCtr.customerSearchCtr.text = '';
           _customerCtr.filteredItems.clear();
@@ -41,8 +42,6 @@ class CustomerCardWidget extends StatelessWidget {
           print(customer.name);
           _customerCtr.setSelectedCustomer(customer);
           print('선택 ${_customerCtr.selectedCustomer.value!.name}');
-
-          context.goNamed('customer');
         }
       },
       child: Stack(
