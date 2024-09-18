@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:jangboo_flutter/app/data/enum/sort.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
+import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
+import 'package:jangboo_flutter/app/ui/web/introduce/introduce_screen.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/customer_card_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
@@ -61,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     print('home');
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       drawer: Drawer(
@@ -79,14 +83,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 leading: const Icon(Icons.store),
                 title: Text('내정보'),
                 onTap: () {
-                  Get.toNamed(Routes.userEdit);
+                  context.goNamed(Routes.userEdit);
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.block),
                 title: Text('비활성화 장부'),
                 onTap: () {
-                  Get.toNamed(Routes.customerInactive);
+                  context.goNamed(Routes.customerInactive);
                 },
               ),
               // ListTile(
@@ -98,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 leading: const Icon(Icons.settings_rounded),
                 title: const Text('설정'),
                 onTap: () {
-                  Get.toNamed(Routes.setting);
+                  context.goNamed(Routes.setting);
                 },
               ),
               Spacer(),
@@ -106,9 +110,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 leading: const Icon(Icons.logout_rounded),
                 title: const Text('로그아웃'),
                 onTap: () async {
-                  ;
-
-                  await _authService.logout();
+                  await _authService.logout().then((_) {
+                    context.replaceNamed(Routes.introduce);
+                  });
                   // Get.offAll(const LoginScreen());
                 },
               ),
@@ -123,6 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(color: Colors.grey),
         ),
         actions: [
+          TextButton(
+              onPressed: () {
+                print('home user value : ${_userCtr.user.value!}');
+              },
+              child: Text('test')),
           Obx(() {
             if (_userCtr.initCustomerMode.value) {
               return Row(children: [
@@ -562,7 +571,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         co_phone: phone,
                                       )
                                           .then((value) {
-                                        Get.back();
+                                        context.pop();
                                       });
                                     } catch (e) {
                                       print(e);
@@ -742,7 +751,7 @@ class HomeContent extends StatelessWidget {
                                         co_phone: phone,
                                       )
                                           .then((value) {
-                                        Get.back();
+                                        context.pop();
                                       });
                                     } catch (e) {
                                       print(e);

@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:html';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
@@ -19,8 +21,17 @@ class UserController extends GetxController {
     super.onInit();
     // checkInitialAuthState();
     // setupAuthListener();
+
     loadUserData();
+    // loadUserDataInLocalStorage();
     getCustomerModeGetStorage();
+  }
+
+  Future<void> loadUserDataInLocalStorage() async {
+    var currentUser = window.localStorage['currentUser'];
+    if (currentUser != null && user != null) {
+      user.value = await UserModel.fromJson(jsonDecode(currentUser));
+    }
   }
 
   Future<void> loadUserData() async {
@@ -35,6 +46,8 @@ class UserController extends GetxController {
       if (userData != null) {
         user.value = UserModel.fromJson(userData.first);
         beforeAddRatio.value = user.value!.addRatio;
+        // 고객 정보를 localStorage에 저장
+        window.localStorage['currentUser'] = jsonEncode(user.toJson());
         print('user value = ${user.value}');
       }
     }

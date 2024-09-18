@@ -3,9 +3,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
+import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
+import 'package:jangboo_flutter/app/ui/web/introduce/introduce_screen.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/number_pad_widget.dart';
@@ -21,9 +24,11 @@ import 'package:responsive_framework/responsive_framework.dart';
 CustomerController _customerCtr = Get.find<CustomerController>();
 
 class CustomerScreen extends StatefulWidget {
-  CustomerScreen({super.key, required this.customer});
+  CustomerScreen({
+    super.key,
+  });
 
-  CustomerModel customer;
+  // CustomerModel customer;
 
   @override
   State<CustomerScreen> createState() {
@@ -47,7 +52,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
     getCustomerModeGetStorage();
 
     // idx = customerCtr.currentCustomerIndex;m
-    customer = widget.customer;
+    customer = _customerCtr.selectedCustomer.value!;
     favorite.value = customer.favorite;
     _customerCtr.coId.value = customer.id;
     _customerCtr.coTeamName.value = customer.name;
@@ -67,41 +72,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
     _customerCtr.balance.value = customer.balance;
     _customerCtr.addPointValue.value = '';
-
-    // customerCtr.type.value = ActionType.use.title;
-    // customerCtr.cardColor!.value = ActionType.use.iconColor!;
-    // customerCtr.seclectedMenu = ActionType.use;
-
     super.initState();
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (customerCtr.balance.value == 0) {
-    //     customerCtr.seclectedMenu = ActionType.add;
-    //     customerCtr.type.value = ActionType.add.title;
-    //     customerCtr.cardColor!.value = ActionType.add.iconColor!;
-    //   } else {
-    //     customerCtr.type.value = ActionType.use.title;
-    //     customerCtr.cardColor!.value = ActionType.use.iconColor!;
-    //     customerCtr.seclectedMenu = ActionType.use;
-    //   }
-    // });
   }
-
-  // // 각 TextField를 위한 FocusNode 생성
-  // final FocusNode _nameFocusNode = FocusNode();
-  // final FocusNode _phoneFocusNode = FocusNode();
-  // final FocusNode _cardNumberFocusNode = FocusNode();
-  // final FocusNode _barcodeFocusNode = FocusNode();
-
-  // @override
-  // void dispose() {
-  //   // 리소스 해제
-  //   _nameFocusNode.dispose();
-  //   _phoneFocusNode.dispose();
-  //   _cardNumberFocusNode.dispose();
-  //   _barcodeFocusNode.dispose();
-  //   super.dispose();
-  // }
 
   final isLoading = false.obs;
 
@@ -165,7 +137,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                         ),
                                         ButtonWidget(
                                             onTap: () {
-                                              Get.back();
+                                              context.pop();
                                             },
                                             child: const AspectRatio(
                                                 aspectRatio: 1,
@@ -208,10 +180,16 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                     ButtonWidget(
                                         bgColor: Colors.grey[200],
                                         onTap: () async {
-                                          Get.back();
+                                          context.pop();
+                                          var customerId = customer.id;
+                                          print(customerId);
 
-                                          Get.toNamed(
-                                              '${Routes.customerInfo}/${customer.id}');
+                                          context.goNamed(
+                                            Routes.customerEdit,
+                                            pathParameters: {
+                                              'id': customerId.toString()
+                                            },
+                                          );
                                         },
                                         child: const Padding(
                                           padding: EdgeInsets.symmetric(
@@ -376,7 +354,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                           Obx(
                             () => Center(
                               child: MaxWidthBox(
-                                maxWidth: 600,
+                                maxWidth: 500,
                                 child: NumberPadWidget(
                                   value: _customerCtr.addPointValue.value,
                                   aspectRatio: 1.6,
@@ -503,7 +481,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                             Expanded(
                               child: ButtonWidget(
                                   onTap: () async {
-                                    Get.back();
+                                    context.pop();
                                     openDialog.value = false;
                                   },
                                   bgColor: sgColor,
@@ -546,7 +524,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               child: ButtonWidget(
                                   bgColor: subColor,
                                   onTap: () {
-                                    Get.back();
+                                    context.pop();
                                   },
                                   child: const Center(
                                     child: Text(
@@ -559,12 +537,12 @@ class _CustomerScreenState extends State<CustomerScreen> {
                             Expanded(
                               child: ButtonWidget(
                                   onTap: () async {
-                                    Get.back();
+                                    context.pop();
 
                                     await _customerCtr
                                         .deleteCustomer(customerId: customer.id)
                                         .then((value) {
-                                      Get.back();
+                                      context.pop();
                                       Get.snackbar(
                                           '${_customerCtr.coName.value} ${_customerCtr.coTeamName.value} ',
                                           '삭제완료',
@@ -717,6 +695,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
     final UserController _userCtr = Get.find<UserController>();
 
     final addPercent = _userCtr.beforeAddRatio;
+    _customerCtr.usePotinValue.value = '';
 
     return showDialog(
         // backgroundColor: Colors.transparent,
@@ -869,7 +848,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               children: [
                                 ButtonWidget(
                                     onTap: () {
-                                      Get.back();
+                                      context.pop();
                                       isLoading.value = false;
                                     },
                                     child: const AspectRatio(
@@ -890,7 +869,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                                     customerId: customer.id,
                                                     point: addPoint.toInt())
                                                 .then((value) {
-                                              Get.back();
+                                              context.pop();
 
                                               isLoading.value = false;
                                               _customerCtr.loadCustomerList();
@@ -1008,7 +987,8 @@ class History extends StatelessWidget {
                   ? const SizedBox()
                   : TextButton(
                       onPressed: () {
-                        Get.toNamed(Routes.record, arguments: customer.id);
+                        context.goNamed(Routes.record,
+                            pathParameters: {'id': customer.id.toString()});
                       },
                       child: const Text('더보기'))
             ],
@@ -1186,7 +1166,6 @@ class History extends StatelessWidget {
 
   Future<dynamic> showPasswordDialog({
     required BuildContext context,
-    required bool used,
     required Map<String, dynamic> data,
     required bool isCanceled,
     required Function onConfirm,
@@ -1211,7 +1190,7 @@ class History extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildCloseButton(),
+                  _buildCloseButton(context),
                   _buildHeader(data, point, isCanceled),
                   const SizedBox(height: 30),
                   PasswordDotsWidget(password: password),
@@ -1245,12 +1224,12 @@ class History extends StatelessWidget {
     );
   }
 
-  Widget _buildCloseButton() {
+  Widget _buildCloseButton(BuildContext context) {
     return Align(
       alignment: Alignment.topRight,
       child: IconButton(
         color: Colors.grey,
-        onPressed: () => Get.back(),
+        onPressed: () => context.pop(),
         icon: const Icon(Icons.close),
       ),
     );
@@ -1300,7 +1279,7 @@ class History extends StatelessWidget {
           isLoading.value = true;
           await onConfirm();
           isLoading.value = false;
-          Get.back();
+          context.pop();
         }
       } else {
         password.value = '';
@@ -1326,40 +1305,46 @@ class History extends StatelessWidget {
                         IconButton(
                             color: Colors.grey,
                             onPressed: () {
-                              Get.back();
+                              context.pop();
                             },
                             icon: const Icon(Icons.close)),
                       ],
                     ),
+                    Text('${data['canceled'].toString()}'),
                     StateChangeButtonWidget(
                       onTap: () async {
-                        Get.back();
-                        if (data['canceled'] == true) {
+                        context.pop();
+                        var transactionId = data['id'];
+                        var amount = data['money'];
+                        var customerId = customer.id;
+                        if (data['canceled'] == false) {
+                          print('cancled value = ${data['canceled']}');
                           showPasswordDialog(
                             context: context,
-                            used: true,
                             data: data,
                             isCanceled: false,
-                            onConfirm: () => _customerCtr.cancleToBack(
-                              canceled: true,
-                              id: data['id'],
-                              point: data['money'],
-                              customerId: customer.id,
+                            onConfirm: () =>
+                                _customerCtr.toggleTransactionStatus(
+                              id: transactionId,
+                              point: amount,
+                              customerId: customerId,
+
+                              currentCanceledStatus: false, // 현재 취소되지 않은 상태
                             ),
                           );
                         } else {
                           showPasswordDialog(
-                            context: context,
-                            used: false,
-                            data: data,
-                            isCanceled: false,
-                            onConfirm: () => _customerCtr.useToCancle(
-                              canceled: false,
-                              id: data['id'],
-                              point: data['money'],
-                              customerId: customer.id,
-                            ),
-                          );
+                              context: context,
+                              data: data,
+                              isCanceled: true,
+                              onConfirm: () =>
+                                  _customerCtr.toggleTransactionStatus(
+                                    id: transactionId,
+                                    point: amount,
+                                    customerId: customerId,
+
+                                    currentCanceledStatus: true, // 현재 취소된 상태
+                                  ));
                           // AskDeleteUsed(context, data['money'], data['id'],
                           //     data['type'] == 'add', data);
                         }
@@ -1372,7 +1357,7 @@ class History extends StatelessWidget {
                     Divider(),
                     StateChangeButtonWidget(
                       onTap: () async {
-                        Get.back();
+                        context.pop();
                         var beforeMemo = data['memo'] ?? '';
                         MemoDialog(context, data['id'], beforeMemo);
                       },
@@ -1412,7 +1397,7 @@ class History extends StatelessWidget {
                         IconButton(
                             color: Colors.grey,
                             onPressed: () {
-                              Get.back();
+                              context.pop();
                             },
                             icon: const Icon(Icons.close)),
                       ],
@@ -1441,7 +1426,7 @@ class History extends StatelessWidget {
                                       id: id,
                                       customerId: customer.id,
                                       memo: memoCtr.text);
-                                  Get.back();
+                                  context.pop();
                                 },
                                 decoration: const InputDecoration(
                                     border: InputBorder.none),
@@ -1458,7 +1443,7 @@ class History extends StatelessWidget {
                                   id: id,
                                   customerId: customer.id,
                                   memo: memoCtr.text);
-                              Get.back();
+                              context.pop();
                             },
                             bgColor: Colors.blue,
                             child: const Text(

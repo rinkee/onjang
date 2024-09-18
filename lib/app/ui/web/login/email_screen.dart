@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
+import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
+import 'package:jangboo_flutter/app/ui/web/introduce/introduce_screen.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/input_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
@@ -44,10 +47,10 @@ class _EmailScreenState extends State<EmailScreen> {
 
     final session = supabase.auth.currentSession;
     if (session != null) {
-      Get.toNamed(Routes.home);
+      context.goNamed(Routes.home);
       print('crtUser : ${supabase.auth.currentUser}');
     } else {
-      Get.toNamed(Routes.email);
+      context.goNamed(Routes.email);
       print('crtUser : ${supabase.auth.currentUser}');
     }
   }
@@ -228,8 +231,8 @@ class _EmailScreenState extends State<EmailScreen> {
                               if (check == true) {
                                 print('다음 화면으로');
 
-                                Get.toNamed(Routes.password,
-                                    arguments: emailCtr.text);
+                                context.goNamed(Routes.password,
+                                    extra: {'email': emailCtr.text});
                               } else {
                                 print('이메일 확인 필요');
                               }

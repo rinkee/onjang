@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
+import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
@@ -71,7 +73,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                     const Spacer(),
                     TextButton(
                         onPressed: () {
-                          Get.toNamed(Routes.login);
+                          context.pushReplacementNamed(Routes.login);
                         },
                         child: const Text(
                           '로그인',
@@ -138,7 +140,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                                 bgColor: Colors.blue,
                                 hoverColor: Colors.blue[600],
                                 onTap: () {
-                                  Get.toNamed(Routes.demoHome);
+                                  // Get.toNamed(Routes.demoHome);
                                 },
                                 child: const Text(
                                   '체험하기',
@@ -150,7 +152,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                                 bgColor: Colors.white,
                                 w: 150,
                                 onTap: () {
-                                  Get.toNamed(Routes.login);
+                                  context.pushReplacementNamed(Routes.login);
                                 },
                                 child: const Text(
                                   '시작하기',
@@ -158,56 +160,11 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                                 )),
                           ],
                         )
-                        // SizedBox(
-                        //   width: 150,
-                        //   height: 50,
-                        //   child: MaterialButton(
-                        //     textColor: Colors.white,
-                        //     color: Colors.blue,
-                        //     hoverColor: Colors.blue[300],
-                        //     shape: RoundedRectangleBorder(
-                        //         borderRadius: BorderRadius.circular(10.0)),
-                        //     onPressed: () {
-                        //       Get.to(() => const LoginScreen());
-                        //     },
-                        //     child: const Text('시작하기'),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
                 ],
                 right: [
-                  // Motion(
-                  //   glare: const GlareConfiguration(),
-                  //   child: Container(
-                  //     decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(30),
-                  //       boxShadow: const [
-                  //         // BoxShadow(
-                  //         //   color: Colors.grey.withOpacity(0.3),
-                  //         //   spreadRadius: 3,
-                  //         //   blurRadius: 7.0,
-                  //         //   offset: const Offset(
-                  //         //       0, 10), // changes position of shadow
-                  //         // ),
-                  //       ],
-                  //     ),
-                  //     child: BorderContainer(
-                  //         w: 1000,
-                  //         h: 400,
-                  //         color: Colors.black,
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.all(8.0),
-                  //           child: ClipRRect(
-                  //               borderRadius: BorderRadius.circular(10),
-                  //               child: Image.asset(
-                  //                 'assets/images/home.png',
-                  //                 fit: BoxFit.fill,
-                  //               )),
-                  //         )),
-                  //   ),
-                  // )
                   AspectRatio(
                     aspectRatio: 1920 / 1085,
                     child: BorderContainerWidget(
@@ -488,7 +445,7 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                       const Gap(50),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => const LoginScreen());
+                          context.goNamed(Routes.login);
                         },
                         child: SizedBox(
                           width: 500,

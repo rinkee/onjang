@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/input_widget.dart';
@@ -23,12 +24,24 @@ class _EditUserScreenState extends State<EditUserScreen> {
   final nameCtr = TextEditingController();
   final storeNameCtr = TextEditingController();
 
+  var uid = '';
+  var userName = '';
+  var storeName = '';
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    nameCtr.text = _userCtr.user.value!.name;
-    storeNameCtr.text = _userCtr.user.value!.storeName;
+    if (_userCtr.user.value != null) {
+      uid = _userCtr.user.value!.uid;
+      nameCtr.text = _userCtr.user.value!.name;
+      storeNameCtr.text = _userCtr.user.value!.storeName;
+    } else {
+      // 사용자 데이터가 없을 경우의 처리
+      print('User data is not available');
+      // 여기에 추가적인 오류 처리 로직을 넣을 수 있습니다.
+      // 예: 이전 화면으로 돌아가기, 오류 메시지 표시 등
+    }
   }
 
   @override
@@ -46,14 +59,14 @@ class _EditUserScreenState extends State<EditUserScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: Get.width / 2 - 20,
+              width: 300,
               child: InputWidget(
                 ctr: nameCtr,
                 title: '내 이름',
               ),
             ),
             SizedBox(
-              width: Get.width / 2 - 20,
+              width: 300,
               child: InputWidget(
                 ctr: storeNameCtr,
                 title: '내 가게명',
@@ -67,7 +80,6 @@ class _EditUserScreenState extends State<EditUserScreen> {
                     bgColor: sgColor,
                     onTap: () async {
                       if (nameCtr.text != '' && storeNameCtr.text != '') {
-                        var uid = _userCtr.user.value!.uid;
                         await supabase
                             .from('user')
                             .update({
@@ -78,7 +90,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                             .then((value) async {
                               // 디비 값 변경후 업데이트ㅐㅡ
                               await _userCtr.loadUserData();
-                              Get.back();
+                              context.pop();
                             });
                       } else {
                         print(nameCtr.text);
@@ -103,7 +115,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                                             const Spacer(),
                                             ButtonWidget(
                                                 onTap: () {
-                                                  Get.back();
+                                                  context.pop();
                                                 },
                                                 child: const Center(
                                                   child: Text('확인'),

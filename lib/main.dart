@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jangboo_flutter/app/controller/setting_controller.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
+import 'package:jangboo_flutter/app/data/routes/go_routes.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
@@ -44,9 +45,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return GetMaterialApp(
-      initialRoute: Routes.initial,
-      getPages: AppPages.pages,
+    return GetMaterialApp.router(
+      // initialRoute: Routes.initial,
+      // getPages: AppPages.pages,
+      routerDelegate: router.routerDelegate,
+      backButtonDispatcher: router.backButtonDispatcher,
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
+import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_sizes.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/input_widget.dart';
@@ -48,10 +50,11 @@ class _SignInScreenState extends State<SignInScreen> {
 
     final session = supabase.auth.currentSession;
     if (session != null) {
-      Get.toNamed(Routes.home);
+      context.goNamed(Routes.home);
       print('crtUser : ${supabase.auth.currentUser}');
     } else {
-      Get.toNamed(Routes.signIn);
+      context.goNamed(Routes.signIn);
+
       print('crtUser : ${supabase.auth.currentUser}');
     }
   }
@@ -376,21 +379,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   passwordCheck &&
                                   nameCtr.text != '' &&
                                   storeNameCtr.text != '') {
-                                // final result = await auth.signUp(
-                                //     phone: phone,
-                                //     password: password,
-                                //     name: nameCtr.text,
-                                //     passwordHash: passwordHash,
-                                //     store_name: storeNameCtr.text);
-
-                                Get.toNamed(Routes
-                                    .initial); // print(result['message']);
-                                // if (result == 'error') {
-                                //   emailCtr.clear();
-                                //   emailHintText = '이미 존재하는 번호입니다';
-                                //   emailBgColor = Colors.red[100];
-                                //   setState(() {});
-                                // }
+                                context.goNamed(Routes.initial);
                               }
                             },
                             bgColor: sgColor,

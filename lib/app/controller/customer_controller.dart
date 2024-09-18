@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,19 +10,24 @@ import 'package:jangboo_flutter/app/data/model/customer_model.dart';
 import 'package:jangboo_flutter/app/supabase.dart';
 
 class CustomerController extends GetxController {
+  //의존성
   final UserController _userController = Get.find<UserController>();
   static CustomerController get to => Get.find();
   var currentCustomerIndex = 0;
-  final RxList<CustomerModel> customerList = <CustomerModel>[].obs; // 검색용
-  final RxList<CustomerModel> deletedCustomerList =
-      <CustomerModel>[].obs; // 삭제된 리스트 확인용
+
+  //고객관리
+  final RxList<CustomerModel> customerList = <CustomerModel>[].obs; // 전체 고객 리스트
   final RxList<String> companyList = <String>[].obs;
   final RxString selectedCompany = ''.obs;
   final RxList<CustomerModel> searchResults = <CustomerModel>[].obs;
+  Rx<CustomerModel?> selectedCustomer =
+      Rx<CustomerModel?>(null); // 고객 선택 화면, 수정에 보여줄 고객 리스트
 
+  // 검색 및 필터링
   final filteredItems = <CustomerModel>[].obs; // 검색용
   final showSearchScreen = false.obs; // 검색 화면을 보여줄지
-  var type = '사용하기'.obs;
+
+  //고객 정보
   var addPointValue = ''.obs;
   var usePotinValue = ''.obs;
   var coId = 0.obs;
@@ -30,17 +38,10 @@ class CustomerController extends GetxController {
   var coBarcode = ''.obs;
   var balance = 0.obs;
 
-  Rx<Color>? cardColor = Colors.white.obs;
-
   final RxBool isLoading = false.obs;
   var changedCustomerList = false.obs;
 
   final TextEditingController customerSearchCtr = TextEditingController();
-
-  // 회사 선택 부분
-  final currentPage = 0.obs;
-  final itemsPerPage = 6.obs;
-  final PageController pageController = PageController();
 
   // 고객 정렬
   final Rx<SortCriteria> currentSortCriteria = SortCriteria.createdAt.obs;
@@ -52,6 +53,12 @@ class CustomerController extends GetxController {
 
     ever(_userController.user, (_) => loadCustomerList());
     ever(changedCustomerList, (_) => loadCustomerList());
+    // 앱 초기화 시 localStorage에 저장된 고객 정보 불러오기
+    var storedCustomer = window.localStorage['selectedCustomer'];
+    if (storedCustomer != null) {
+      selectedCustomer.value =
+          CustomerModel.fromJson(jsonDecode(storedCustomer));
+    }
   }
 
   Future<void> loadCustomerList() async {
@@ -82,6 +89,13 @@ class CustomerController extends GetxController {
   // 새로운 고객을 추가한 후 이 메서드를 호출합니다.
   void refreshCustomerList() {
     changedCustomerList.toggle();
+  }
+
+  void setSelectedCustomer(CustomerModel customer) {
+    selectedCustomer.value = customer;
+
+    // 고객 정보를 localStorage에 저장
+    window.localStorage['selectedCustomer'] = jsonEncode(customer.toJson());
   }
 
   void updateCompanyList() {
@@ -293,17 +307,17 @@ class CustomerController extends GetxController {
               (customer.barcode?.toLowerCase().contains(searchText) ?? false));
 
       if (matches) {
-        print('Matched customer: ${customer.name}, Search text: $searchText');
+        // print('Matched customer: ${customer.name}, Search text: $searchText');
       }
 
       return matches;
     }).toList();
 
-    print('Search text: $searchText');
-    print('Total matches: ${searchResults.length}');
+    // print('Search text: $searchText');
+    // print('Total matches: ${searchResults.length}');
 
     if (searchResults.isNotEmpty) {
-      print('First match: ${searchResults.first.name}');
+      // print('First match: ${searchResults.first.name}');
     }
 
     update();
@@ -326,6 +340,7 @@ class CustomerController extends GetxController {
     });
 
     balance.value = newBalance;
+    selectedCustomer.value!.balance = newBalance;
   }
 
   Future usePoint({required int customerId, required int point}) async {
@@ -361,51 +376,77 @@ class CustomerController extends GetxController {
       });
 
       balance.value = newBalance;
+      selectedCustomer.value!.balance = newBalance;
     }
+  }
+
+  // 취소 기능
+  Future<void> toggleTransactionStatus({
+    required int id,
+    required int point,
+    required int customerId,
+    required bool currentCanceledStatus,
+  }) async {
+    bool newCanceledStatus = !currentCanceledStatus;
+    int balanceChange = calculateBalanceChange(newCanceledStatus, point);
+    int newBalance = balance.value + balanceChange;
+
+    await supabase
+        .from('balance_log')
+        .update({'canceled': newCanceledStatus}).eq('id', id);
+    await supabase
+        .from('customer')
+        .update({'balance': newBalance}).eq('id', customerId);
+
+    balance.value = newBalance;
+  }
+
+  int calculateBalanceChange(bool isCanceled, int point) {
+    return isCanceled ? point : -point;
   }
 
   // 아래부터 부가기능
   // 사용을 취소하는 기능
-  useToCancle(
-      {required bool canceled,
-      required int id,
-      required int point,
-      required int customerId}) async {
-    var newBalance = 0;
-    if (canceled) {
-      // 사용이  충전이면
-      newBalance = balance.value - point;
-    } else {
-      newBalance = balance.value + point;
-    }
-    await supabase.from('balance_log').update({'canceled': true}).eq('id', id);
-    await supabase
-        .from('customer')
-        .update({'balance': newBalance}).eq('id', customerId);
+  // useToCancle(
+  //     {required bool canceled,
+  //     required int id,
+  //     required int point,
+  //     required int customerId}) async {
+  //   var newBalance = 0;
+  //   if (canceled) {
+  //     // 사용이  충전이면
+  //     newBalance = balance.value - point;
+  //   } else {
+  //     newBalance = balance.value + point;
+  //   }
+  //   await supabase.from('balance_log').update({'canceled': true}).eq('id', id);
+  //   await supabase
+  //       .from('customer')
+  //       .update({'balance': newBalance}).eq('id', customerId);
 
-    balance.value = newBalance;
-  }
+  //   balance.value = newBalance;
+  // }
 
-  // 취소를 되돌리는 기능
-  cancleToBack(
-      {required bool canceled,
-      required int id,
-      required int point,
-      required int customerId}) async {
-    var newBalance = 0;
-    if (canceled) {
-      // 사용이  충전이면
-      newBalance = balance.value + point;
-    } else {
-      newBalance = balance.value - point;
-    }
-    await supabase.from('balance_log').update({'canceled': false}).eq('id', id);
-    await supabase
-        .from('customer')
-        .update({'balance': newBalance}).eq('id', customerId);
+  // // 취소를 되돌리는 기능
+  // cancleToBack(
+  //     {required bool canceled,
+  //     required int id,
+  //     required int point,
+  //     required int customerId}) async {
+  //   var newBalance = 0;
+  //   if (canceled) {
+  //     // 사용이  충전이면
+  //     newBalance = balance.value + point;
+  //   } else {
+  //     newBalance = balance.value - point;
+  //   }
+  //   await supabase.from('balance_log').update({'canceled': false}).eq('id', id);
+  //   await supabase
+  //       .from('customer')
+  //       .update({'balance': newBalance}).eq('id', customerId);
 
-    balance.value = newBalance;
-  }
+  //   balance.value = newBalance;
+  // }
 
   addMemo({
     required int id,

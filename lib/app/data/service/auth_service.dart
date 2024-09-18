@@ -11,10 +11,12 @@ import 'package:uuid/uuid.dart';
 
 class AuthService extends GetxService {
   final _supabase = Supabase.instance.client;
-  final _storage = GetStorage();
+
+  late final GetStorage _storage;
 
   Future<AuthService> init() async {
     await GetStorage.init();
+    _storage = GetStorage();
     return this;
   }
 
@@ -139,7 +141,9 @@ class AuthService extends GetxService {
       await saveUserId(session.user.id);
       UserController _authCtr = Get.find<UserController>();
       await _authCtr.loadUserData();
-      Get.offNamed(Routes.home);
+      // Get.offNamed(Routes.home);
+      return true;
+
       // await fetchUserData(session.user.id);
       // Get.offAll(const LoginScreen());
 
@@ -169,6 +173,6 @@ class AuthService extends GetxService {
   Future<void> logout() async {
     await _storage.remove('user_id');
     await _supabase.auth.signOut();
-    Get.offAllNamed(Routes.introduce);
+    // Get.offAllNamed(Routes.introduce);
   }
 }

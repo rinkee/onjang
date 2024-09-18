@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jangboo_flutter/app/controller/setting_controller.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
@@ -36,7 +37,7 @@ class SettingScreen extends GetView<SettingController> {
         ),
         leading: BackButton(
           onPressed: () {
-            Get.back();
+            context.pop();
             controller.applySettings();
           },
         ),
@@ -97,7 +98,7 @@ class SettingScreen extends GetView<SettingController> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
                 children: [
-                  _buildCloseButton(),
+                  _buildCloseButton(context),
                   Column(
                     children: [
                       _buildDescription(),
@@ -116,7 +117,7 @@ class SettingScreen extends GetView<SettingController> {
                                     .validateAndToggleCustomerMode(
                                         password.value);
                                 if (isValid) {
-                                  Get.back();
+                                  context.pop();
                                 } else {
                                   password.value = '';
                                 }
@@ -136,12 +137,12 @@ class SettingScreen extends GetView<SettingController> {
     );
   }
 
-  Widget _buildCloseButton() {
+  Widget _buildCloseButton(BuildContext context) {
     return Align(
       alignment: Alignment.topRight,
       child: IconButton(
         color: Colors.grey,
-        onPressed: () => Get.back(result: false),
+        onPressed: () => context.pop(false),
         icon: const Icon(Icons.close),
       ),
     );
@@ -214,7 +215,7 @@ class SettingScreen extends GetView<SettingController> {
                         IconButton(
                             color: Colors.grey,
                             onPressed: () {
-                              Get.back(result: false);
+                              context.pop(false);
                             },
                             icon: const Icon(Icons.close)),
                       ],

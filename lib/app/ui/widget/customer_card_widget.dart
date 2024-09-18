@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
+import 'package:jangboo_flutter/app/ui/web/introduce/introduce_screen.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
@@ -36,7 +38,11 @@ class CustomerCardWidget extends StatelessWidget {
           _customerCtr.customerSearchCtr.text = '';
           _customerCtr.filteredItems.clear();
           _customerCtr.showSearchScreen.value = false;
-          Get.toNamed(Routes.customer, arguments: customer);
+          print(customer.name);
+          _customerCtr.setSelectedCustomer(customer);
+          print('선택 ${_customerCtr.selectedCustomer.value!.name}');
+
+          context.goNamed('customer');
         }
       },
       child: Stack(
@@ -119,7 +125,7 @@ class CustomerCardWidget extends StatelessWidget {
                         StateChangeButtonWidget(
                           onTap: () async {
                             await _customerCtr.setActive(customerId: id);
-                            Get.back();
+                            context.pop();
                           },
                           title: '다시 사용하기',
                           icon: Icons.replay,
@@ -131,7 +137,7 @@ class CustomerCardWidget extends StatelessWidget {
                           onTap: () async {
                             if (customer.state != 'inactive') {
                               await _customerCtr.setInactive(customerId: id);
-                              Get.back();
+                              context.pop();
                             }
                           },
                           title: '비활성화',
@@ -144,7 +150,7 @@ class CustomerCardWidget extends StatelessWidget {
                           onTap: () async {
                             if (customer.state != 'delete') {
                               await _customerCtr.deleteCustomer(customerId: id);
-                              Get.back();
+                              context.pop();
                             }
                           },
                           title: '삭제하기',
@@ -155,7 +161,7 @@ class CustomerCardWidget extends StatelessWidget {
                         Divider(),
                         StateChangeButtonWidget(
                           onTap: () {
-                            Get.back();
+                            context.pop();
                           },
                           title: '취소',
                           icon: Icons.close,
@@ -193,7 +199,7 @@ class CustomerCardWidget extends StatelessWidget {
                               child: ButtonWidget(
                                   bgColor: subColor,
                                   onTap: () {
-                                    Get.back();
+                                    context.pop();
                                   },
                                   child: const Center(
                                     child: Text(
@@ -206,12 +212,12 @@ class CustomerCardWidget extends StatelessWidget {
                             Expanded(
                               child: ButtonWidget(
                                   onTap: () async {
-                                    Get.back();
+                                    context.pop();
 
                                     await _customerCtr
                                         .deleteCustomer(customerId: customer.id)
                                         .then((value) {
-                                      Get.back();
+                                      context.pop();
                                       Get.snackbar(
                                           '${_customerCtr.coName.value} ${_customerCtr.coTeamName.value} ',
                                           '삭제완료',

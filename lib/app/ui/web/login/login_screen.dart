@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
+import 'package:jangboo_flutter/app/ui/web/introduce/introduce_screen.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
@@ -19,41 +22,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = Get.find<AuthService>();
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-
-  //   _redirect();
-  // }
-
-  // void _setupAuthListener() {
-  //   supabase.auth.onAuthStateChange.listen((data) {
-  //     final event = data.event;
-  //     if (event == AuthChangeEvent.signedIn) {
-  //       Get.off(const HomeScreen());
-  //       print('crtUser : ${supabase.auth.currentUser}');
-  //     } else {
-  //       if (event == AuthChangeEvent.signedOut) {
-  //         Get.off(LoginScreen());
-  //       }
-  //     }
-  //   });
-  // }
-
-  // Future<void> _redirect() async {
-  //   await Future.delayed(Duration.zero);
-  //   if (!mounted) {
-  //     return;
-  //   }
-
-  //   final session = supabase.auth.currentSession;
-  //   if (session != null) {
-  //     Get.to(const HomeScreenDesktop());
-  //   } else {
-  //     Get.to(const LoginScreen());
-  //   }
-  // }
 
   var email = '';
   var password = '';
@@ -193,6 +161,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       final login = await _authService.logIn(
                           email: email, password: password);
                       print(login);
+                      if (login) {
+                        print('login : ${login}');
+                        context.goNamed(Routes.home);
+                      }
 
                       //   final emailCheck = await supabase
                       //       .from('user')
@@ -263,7 +235,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Center(
                 child: TextButton(
                     onPressed: () {
-                      Get.off(const EmailScreen());
+                      context.go(Routes.email);
                     },
                     child: const Text('처음이신가요? 회원가입하기')),
               ),

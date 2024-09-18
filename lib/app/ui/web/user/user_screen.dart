@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
+import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
@@ -31,7 +33,7 @@ class _UserScreenState extends State<UserScreen> {
                 height: 45,
                 child: ButtonWidget(
                     onTap: () async {
-                      Get.toNamed(Routes.userEdit);
+                      context.goNamed(Routes.userEdit);
                     },
                     child: const Center(
                       child: Text('내 정보 수정'),

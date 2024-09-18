@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/supabase.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_text_theme.dart';
 
 class RecordScreen extends StatelessWidget {
-  const RecordScreen({super.key, required this.customerId});
-
-  final int customerId;
+  const RecordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final int customerId =
+        int.parse(GoRouterState.of(context).pathParameters['id'] ?? '');
     return Scaffold(
       appBar: AppBar(),
       body: Padding(

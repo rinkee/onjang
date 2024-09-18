@@ -188,6 +188,12 @@
       "languageVersion": "2.16"
     },
     {
+      "name": "go_router",
+      "rootUri": "file:///Users/seong/.pub-cache/hosted/pub.dev/go_router-14.2.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "google_fonts",
       "rootUri": "file:///Users/seong/.pub-cache/hosted/pub.dev/google_fonts-6.2.1",
       "packageUri": "lib/",
@@ -258,6 +264,12 @@
       "rootUri": "file:///Users/seong/.pub-cache/hosted/pub.dev/lints-2.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "logging",
+      "rootUri": "file:///Users/seong/.pub-cache/hosted/pub.dev/logging-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "matcher",
@@ -632,7 +644,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2024-09-14T07:14:48.825998Z",
+  "generated": "2024-09-17T10:04:42.640302Z",
   "generator": "pub",
   "generatorVersion": "3.5.1",
   "flutterRoot": "file:///Users/seong/flutter",
