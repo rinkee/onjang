@@ -10,6 +10,7 @@ import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
 import 'package:jangboo_flutter/app/ui/web/introduce/introduce_screen.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
+import 'package:jangboo_flutter/app/ui/widget/customer_add_input_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/customer_card_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/border_container_widget.dart';
 import 'package:jangboo_flutter/app/ui/widget/search_bar_widget.dart';
@@ -266,7 +267,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             //   ),
                             // ),
                             MaxWidthBox(
-                                maxWidth: 440, child: SearchBarWidget()),
+                                maxWidth: 440,
+                                child: SearchBarWidget(
+                                  searchCtr: _customerCtr.customerSearchCtr,
+                                  onChanged: (_) {
+                                    _customerCtr
+                                        .search(_customerCtr.customerSearchCtr);
+                                  },
+                                )),
                             Padding(
                               padding: const EdgeInsets.only(
                                   left: 5, bottom: 20, top: 30),
@@ -324,7 +332,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             item
                                                     ? Colors.black
                                                     : Colors.black,
-                                                fontWeight: FontWeight.bold),
+                                                ),
                                           );
                                         }))
                                     .toList(),
@@ -370,7 +378,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: DropdownButtonFormField<
                                             SortCriteria>(
                                           style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                        
                                               color: Colors.black),
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
@@ -497,7 +505,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             style: TextStyle(
                                                 fontSize: 17,
                                                 color: Colors.black,
-                                                fontWeight: FontWeight.bold),
+                                                ),
                                           ),
                                         ),
                                       ],
@@ -546,7 +554,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            CustomerAddInput(
+                            CustomerAddInputWidget(
                               title: '회사명',
                               value: company,
                               onChanged: (val) {
@@ -554,7 +562,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                             ),
                             const Gap(30),
-                            CustomerAddInput(
+                            CustomerAddInputWidget(
                               title: '부서명 / 이름 (필수값)',
                               value: name,
                               onChanged: (val) {
@@ -562,7 +570,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                             ),
                             const Gap(30),
-                            CustomerAddInput(
+                            CustomerAddInputWidget(
                               title: '전화번호',
                               inputType: TextInputType.phone,
                               value: phone,
@@ -642,7 +650,20 @@ class HomeContent extends StatelessWidget {
                 mainAxisExtent: 140),
             itemBuilder: (context, index) {
               CustomerModel customer = _customerCtr.searchResults[index];
-              return CustomerCardWidget(customer: customer);
+              return CustomerCardWidget(
+                customer: customer,
+                onTap: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  context.goNamed('customer');
+                  _customerCtr.customerSearchCtr.clear();
+                  _customerCtr.customerSearchCtr.text = '';
+                  _customerCtr.filteredItems.clear();
+                  _customerCtr.showSearchScreen.value = false;
+                  print(customer.name);
+                  _customerCtr.setSelectedCustomer(customer);
+                  print('선택 ${_customerCtr.selectedCustomer.value!.name}');
+                },
+              );
             },
           ),
         );
@@ -658,7 +679,20 @@ class HomeContent extends StatelessWidget {
                 mainAxisExtent: 140),
             itemBuilder: (context, index) {
               CustomerModel customer = _customerCtr.filteredCustomers[index];
-              return CustomerCardWidget(customer: customer);
+              return CustomerCardWidget(
+                customer: customer,
+                onTap: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  context.goNamed('customer');
+                  _customerCtr.customerSearchCtr.clear();
+                  _customerCtr.customerSearchCtr.text = '';
+                  _customerCtr.filteredItems.clear();
+                  _customerCtr.showSearchScreen.value = false;
+                  print(customer.name);
+                  _customerCtr.setSelectedCustomer(customer);
+                  print('선택 ${_customerCtr.selectedCustomer.value!.name}');
+                },
+              );
             },
           ),
         );
@@ -726,7 +760,7 @@ class HomeContent extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            CustomerAddInput(
+                            CustomerAddInputWidget(
                               title: '회사명',
                               value: company,
                               onChanged: (val) {
@@ -734,7 +768,7 @@ class HomeContent extends StatelessWidget {
                               },
                             ),
                             const Gap(30),
-                            CustomerAddInput(
+                            CustomerAddInputWidget(
                               title: '부서명 / 이름 (필수값)',
                               value: name,
                               onChanged: (val) {
@@ -742,7 +776,7 @@ class HomeContent extends StatelessWidget {
                               },
                             ),
                             const Gap(30),
-                            CustomerAddInput(
+                            CustomerAddInputWidget(
                               title: '전화번호',
                               inputType: TextInputType.phone,
                               value: phone,
@@ -797,46 +831,5 @@ class HomeContent extends StatelessWidget {
                     ),
                   )));
         });
-  }
-}
-
-class CustomerAddInput extends StatelessWidget {
-  CustomerAddInput(
-      {super.key,
-      required this.title,
-      required this.value,
-      this.inputType,
-      required this.onChanged});
-
-  String title;
-  String value;
-  TextInputType? inputType;
-  final Function(String) onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title),
-        Gap(3),
-        Container(
-          width: 200,
-          decoration: BoxDecoration(
-              color: Colors.grey[100], borderRadius: BorderRadius.circular(20)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: TextField(
-                inputFormatters: [
-                  FilteringTextInputFormatter.deny(
-                      RegExp(r'[\s-]')), // 공백과 하이픈을 모두 거부합니다
-                ],
-                decoration: InputDecoration(border: InputBorder.none),
-                keyboardType: inputType ?? TextInputType.text,
-                onChanged: onChanged),
-          ),
-        ),
-      ],
-    );
   }
 }

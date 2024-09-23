@@ -37,14 +37,11 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-  final TextEditingController searchCtr = TextEditingController();
-
-  var f = NumberFormat('###,###,###,###');
   var favorite = false.obs;
-  var idx = 0;
   late CustomerModel customer;
   final openDialog = false.obs;
   var initCustomerMode = false.obs;
+  final isLoading = false.obs;
 
   @override
   void initState() {
@@ -74,8 +71,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
     _customerCtr.addPointValue.value = '';
     super.initState();
   }
-
-  final isLoading = false.obs;
 
   getCustomerModeGetStorage() async {
     await GetStorage.init();
@@ -327,8 +322,8 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         ],
                       ),
                     )),
-                Expanded(
-                  flex: 2,
+                Container(
+                  width: 430,
                   child: Container(
                     color: Colors.grey[100],
                     child: Padding(
@@ -346,18 +341,19 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                     ? '0P'
                                     : '${f.format(int.parse(_customerCtr.addPointValue.value))}P',
                                 style: const TextStyle(
-                                    fontSize: 40, fontWeight: FontWeight.bold),
+                                  height: 1.2,
+                                    fontSize: 60, fontWeight: FontWeight.bold),
                               )),
-                          Gap(10),
-                          Divider(),
-                          const Gap(20),
+                          
+                          // Divider(),
+                          Gap(20),
                           Obx(
                             () => Center(
                               child: MaxWidthBox(
                                 maxWidth: 450,
                                 child: NumberPadWidget(
                                   value: _customerCtr.addPointValue.value,
-                                  aspectRatio: 1.6,
+                                  aspectRatio: 1.8,
                                   numberStyle: TextStyle(fontSize: 26),
                                   onChanged: (newValue) {
                                     _customerCtr.addPointValue.value = newValue;
@@ -439,7 +435,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
         builder: (context) {
           Future.delayed(const Duration(seconds: 3), () {
             if (openDialog.value == true) {
-              Navigator.pop(context);
+              context.pop();
             }
           });
 
@@ -598,7 +594,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                     ),
                     Text(
                       _customerCtr.coTeamName.value,
-                      style: coTeamText,
+                      style: coTeamTextNotBold,
                     ),
                   ],
                 ),
@@ -615,13 +611,14 @@ class _CustomerScreenState extends State<CustomerScreen> {
                 //     ))
               ],
             )),
+            Gap(10),
         Row(
           children: [
             Obx(
               () => Text(
                 '${f.format(_customerCtr.balance.value)}P',
                 style: const TextStyle(
-                    fontSize: 36, fontWeight: FontWeight.bold, height: 1),
+                    fontSize: 60, fontWeight: FontWeight.bold, height: 1),
               ),
             ),
             const Gap(20),

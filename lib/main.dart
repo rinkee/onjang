@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jangboo_flutter/app/controller/demo_controller.dart';
 import 'package:jangboo_flutter/app/controller/setting_controller.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
 import 'package:jangboo_flutter/app/data/routes/go_routes.dart';
@@ -34,6 +35,7 @@ void main() async {
   Get.put(UserController());
   Get.put(CustomerController());
   Get.put(SettingController());
+  Get.put(DemoController());
 
   runApp(const MyApp());
 }

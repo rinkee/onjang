@@ -12,6 +12,9 @@ class Routes {
   static const String signIn = 'signIn';
   static const String email = 'email';
   static const String password = 'password';
+  static const String demohome = 'demohome';
+  static const String demoCustomer = 'demoCustomer';
+  static const String test = 'test';
 }
 
 class Paths {
@@ -28,6 +31,9 @@ class Paths {
   static const String signIn = '/signin';
   static const String email = '/email';
   static const String password = '/password';
+  static const String demohome = '/demohome';
+  static const String demoCustomer = '/demoCustomer';
+  static const String test = '/test';
 
   // 중첩 경로를 위한 메서드
   // static String customerPath() => '$home/$customer';

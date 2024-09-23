@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jangboo_flutter/app/data/model/demo_customer.dart';
 import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
 import 'package:jangboo_flutter/app/initial_screen.dart';
+import 'package:jangboo_flutter/app/ui/test.dart';
 import 'package:jangboo_flutter/app/ui/web/customer/customer_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/customer/customer_inactive_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/customer/customer_edit_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/customer/record_screen.dart';
+import 'package:jangboo_flutter/app/ui/web/demo/demo_customer.dart';
+import 'package:jangboo_flutter/app/ui/web/demo/demo_home.dart';
 import 'package:jangboo_flutter/app/ui/web/home/home_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/introduce/introduce_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/login/email_screen.dart';
@@ -28,17 +32,27 @@ final router = GoRouter(
     final bool isPasswordPage = state.uri.path == Paths.password;
     final bool isEmailPage = state.uri.path == Paths.email;
 
+    final bool isDemoPage = state.uri.path == Paths.demohome;
+    final bool isDemoCustomerPage = state.uri.path == Paths.demoCustomer;
+
     if (await _authService.isLoggedIn() == false &&
         !isIntroducePage &&
         !isLoginPage &&
         !isSignInPage &&
         !isPasswordPage &&
-        !isEmailPage) {
+        !isEmailPage &&
+        !isDemoPage &&
+        !isDemoCustomerPage) {
       return Paths.introduce;
     }
 
     // 로그인, 회원가입, 비밀번호, 이메일 페이지는 자유롭게 접근 가능
-    if (isLoginPage || isSignInPage || isPasswordPage || isEmailPage) {
+    if (isLoginPage ||
+        isSignInPage ||
+        isPasswordPage ||
+        isEmailPage ||
+        isDemoPage ||
+        isDemoCustomerPage) {
       return null;
     }
 
@@ -58,16 +72,29 @@ final router = GoRouter(
     //   }
     //   return null;
     // }
-    print(state.uri.path);
-    print(Routes.login);
-    print(Paths.login);
-    print(state.uri.path == Paths.login);
   },
   routes: [
     GoRoute(
       path: Paths.initial,
       name: Routes.initial,
       builder: (context, state) => InitialScreen(),
+    ),
+    GoRoute(
+      path: Paths.test,
+      name: Routes.test,
+      builder: (context, state) => const TestScreen(),
+    ),
+    GoRoute(
+      path: Paths.demohome,
+      name: Routes.demohome,
+      builder: (context, state) => const DemoHome(),
+    ),
+    GoRoute(
+      path: Paths.demoCustomer,
+      name: Routes.demoCustomer,
+      builder: (context, state) {
+        return DemoCustomerScreen();
+      },
     ),
     GoRoute(
       path: Paths.home,

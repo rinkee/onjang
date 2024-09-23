@@ -7,9 +7,12 @@ import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/customer_controller.dart';
 
 class SearchBarWidget extends StatelessWidget {
-  SearchBarWidget({super.key});
+  SearchBarWidget(
+      {super.key, required this.searchCtr, required this.onChanged});
 
-  final _customerCtr = Get.find<CustomerController>();
+  // final _customerCtr = Get.find<CustomerController>();
+  final TextEditingController searchCtr;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +31,18 @@ class SearchBarWidget extends StatelessWidget {
               Gap(5),
               Expanded(
                   child: TextField(
-                // textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 15, color: Colors.grey[600]),
-                decoration: InputDecoration(
-                    hintStyle: TextStyle(fontSize: 15, color: Colors.grey[700]),
-                    border: InputBorder.none,
-                    hintText: '이름, 번호, 바코드로 검색'),
-                controller: _customerCtr.customerSearchCtr,
-                onChanged: (_) =>
-                    _customerCtr.search(_customerCtr.customerSearchCtr),
-              )),
+                      // textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15, color: Colors.grey[600]),
+                      decoration: InputDecoration(
+                          hintStyle:
+                              TextStyle(fontSize: 15, color: Colors.grey[700]),
+                          border: InputBorder.none,
+                          hintText: '이름, 번호, 바코드로 검색'),
+                      controller: searchCtr,
+                      onChanged: onChanged)),
               IconButton(
                   onPressed: () {
-                    _customerCtr.customerSearchCtr.clear();
+                    searchCtr.clear();
                   },
                   color: Colors.grey,
                   icon: const Icon(Icons.close_rounded))

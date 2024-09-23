@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jangboo_flutter/app/controller/demo_controller.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
 import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/ui/widget/button_widget.dart';
@@ -142,6 +143,9 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                                 hoverColor: Colors.blue[600],
                                 onTap: () {
                                   // Get.toNamed(Routes.demoHome);
+                                  final _demoCtr = Get.put(DemoController());
+                                  _demoCtr.updateCompanyList();
+                                  context.goNamed(Routes.demohome);
                                 },
                                 child: const Text(
                                   '체험하기',

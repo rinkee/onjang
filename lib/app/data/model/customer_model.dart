@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class CTMState {
   static const String active = 'active';
   static const String unActive = 'unActive';
@@ -15,9 +17,10 @@ class CustomerModel {
   final String? card;
   final DateTime lastVisit;
   final String userId;
-  final String state;
+  String state;
   int balance;
   bool favorite;
+  RxList? log;
 
   CustomerModel({
     required this.id,
@@ -33,6 +36,7 @@ class CustomerModel {
     required this.balance,
     required this.favorite,
     required this.state,
+    this.log,
   });
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
