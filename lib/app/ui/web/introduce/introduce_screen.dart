@@ -87,186 +87,197 @@ class _IntroduceScreenState extends State<IntroduceScreen> {
                 ),
               ),
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ListView(
-                children: [
-                  Gap(100),
-                  AspectRatio(
-                    aspectRatio: 1920 / 1085,
-                    child: BorderContainerWidget(
-                        color: Colors.black,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                showMainImage,
-                                fit: BoxFit.fill,
-                              )),
-                        )),
-                  ),
-                  Gap(30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '효율성이 중요한 사장님들을 위한',
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '선결제 장부 서비스',
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Gap(100),
-                  Text(
-                    '이런 장점이 있어요',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Gap(10),
-                  TellGoodThings(
-                    title: '검색 기능',
-                    description:
-                        '장부 고객님이 사용하기 위해 일일히 찾아야했던 장부 클릭 몇번으로 검색해서 사용해보세요',
-                  ),
-                  TellGoodThings(
-                    title: '자동 계산',
-                    description: '매번 계산하기 힘드셨죠? 자동으로 계산되어 편리합니다',
-                  ),
-                  TellGoodThings(
-                    title: '추가 충전',
-                    description: '일정 퍼센트 추가 충전이 가능해 고객님께 할인 혜택을 드릴 수 있습니다',
-                  ),
-                  TellGoodThings(
-                    title: '합리적인 가격',
-                    description: '월 1000원부터 시작하는 플랜으로 부담없이 적용할수있습니다',
-                  ),
-                  Gap(100),
-                  Text(
-                    '어떤 서비스인지 궁금해요',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Gap(5),
-                  Text(
-                    '체험하기를 클릭해 어떤 서비스인지 확인해보세요',
-                    style: TextStyle(fontSize: 18, color: Colors.grey[700]),
-                  ),
-                  Text(
-                    '(서비스는 태블릿,PC화면에 최적화 되어있습니다)',
-                    style: TextStyle(fontSize: 18, color: Colors.grey[700]),
-                  ),
-                  Gap(20),
-                  ButtonWidget(
-                      w: 30,
-                      bgColor: Colors.blue,
-                      hoverColor: Colors.blue[600],
-                      onTap: () {
-                        // Get.toNamed(Routes.demoHome);
-                        final _demoCtr = Get.put(DemoController());
-                        _demoCtr.updateCompanyList();
-                        context.goNamed(Routes.demohome);
-                      },
-                      child: const Text(
-                        '체험하기',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      )),
-                  Gap(100),
-                  Text(
-                    '플랜',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Gap(20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Table(
-                              border: TableBorder.all(
-                                  color:
-                                      const Color.fromARGB(255, 234, 234, 234)),
-                              children: [
-                                TableRow(
-                                  children: [
-                                    TableText(
-                                      text: '플랜명',
-                                    ),
-                                    TableText(
-                                      text: '장부1000',
-                                    ),
-                                    TableText(
-                                      text: '장부3000',
-                                    ),
-                                    TableText(
-                                      text: '장부5000',
-                                    ),
-                                  ],
-                                ),
-                                TableRow(
-                                  children: [
-                                    TableText(
-                                      text: '고객 등록 수',
-                                    ),
-                                    TableText(
-                                      text: '5명',
-                                    ),
-                                    TableText(
-                                      text: '무제한',
-                                    ),
-                                    TableText(
-                                      text: '무제한',
-                                    ),
-                                  ],
-                                ),
-                                TableRow(
-                                  children: [
-                                    TableText(
-                                      text: '광고',
-                                    ),
-                                    TableText(
-                                      text: 'O',
-                                    ),
-                                    TableText(
-                                      text: 'X',
-                                    ),
-                                    TableText(
-                                      text: 'X',
-                                    ),
-                                  ],
-                                ),
-                                TableRow(
-                                  children: [
-                                    TableText(
-                                      text: '가격 (월)',
-                                    ),
-                                    TableText(
-                                      text: '1000원',
-                                    ),
-                                    TableText(
-                                      text: '3000원',
-                                    ),
-                                    TableText(
-                                      text: '5000원',
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 50),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Gap(100),
+                    AspectRatio(
+                      aspectRatio: 1920 / 1085,
+                      child: BorderContainerWidget(
+                          color: Colors.black,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  showMainImage,
+                                  fit: BoxFit.fill,
+                                )),
+                          )),
+                    ),
+                    Gap(30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '효율성이 중요한 사장님들을 위한',
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '선결제 장부 서비스',
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Gap(150),
+                    Text(
+                      '이런 장점이 있어요',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    Gap(10),
+                    TellGoodThings(
+                      title: '검색 기능',
+                      description: '일일이 찾아야 했던 장부를 클릭 몇 번으로 검색해서 사용해보세요',
+                    ),
+                    TellGoodThings(
+                      title: '자동 계산',
+                      description: '잔액이 자동으로 계산되어 편리합니다',
+                    ),
+                    TellGoodThings(
+                      title: '추가 충전',
+                      description: '일정 퍼센트 추가 충전으로 고객님들께 할인 혜택을 드릴 수 있습니다',
+                    ),
+                    TellGoodThings(
+                      title: '합리적인 가격',
+                      description: '월 1,000원부터 시작하는 플랜으로 부담 없이 적용할 수 있습니다',
+                    ),
+                    Gap(150),
+                    Text(
+                      '어떤 서비스인지 궁금해요',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    Gap(5),
+                    Text(
+                      '체험하기를 클릭해 어떤 서비스인지 확인해보세요',
+                      style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                    ),
+                    Text(
+                      '(서비스는 태블릿,PC화면에 최적화 되어있습니다)',
+                      style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                    ),
+                    Gap(20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ButtonWidget(
+                            w: 200,
+                            bgColor: Colors.blue,
+                            hoverColor: Colors.blue[600],
+                            onTap: () {
+                              // Get.toNamed(Routes.demoHome);
+                              final _demoCtr = Get.put(DemoController());
+                              _demoCtr.updateCompanyList();
+                              context.goNamed(Routes.demohome);
+                            },
+                            child: const Text(
+                              '체험하기',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
+                            )),
+                      ],
+                    ),
+                    Gap(150),
+                    Text(
+                      '플랜',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    Gap(20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Table(
+                                border: TableBorder.all(
+                                    color: const Color.fromARGB(
+                                        255, 234, 234, 234)),
+                                children: [
+                                  TableRow(
+                                    children: [
+                                      TableText(
+                                        text: '플랜명',
+                                      ),
+                                      TableText(
+                                        text: '장부1000',
+                                      ),
+                                      TableText(
+                                        text: '장부3000',
+                                      ),
+                                      TableText(
+                                        text: '장부5000',
+                                      ),
+                                    ],
+                                  ),
+                                  TableRow(
+                                    children: [
+                                      TableText(
+                                        text: '고객 등록 수',
+                                      ),
+                                      TableText(
+                                        text: '5명',
+                                      ),
+                                      TableText(
+                                        text: '무제한',
+                                      ),
+                                      TableText(
+                                        text: '무제한',
+                                      ),
+                                    ],
+                                  ),
+                                  TableRow(
+                                    children: [
+                                      TableText(
+                                        text: '광고',
+                                      ),
+                                      TableText(
+                                        text: 'O',
+                                      ),
+                                      TableText(
+                                        text: 'X',
+                                      ),
+                                      TableText(
+                                        text: 'X',
+                                      ),
+                                    ],
+                                  ),
+                                  TableRow(
+                                    children: [
+                                      TableText(
+                                        text: '가격 (월)',
+                                      ),
+                                      TableText(
+                                        text: '1000원',
+                                      ),
+                                      TableText(
+                                        text: '3000원',
+                                      ),
+                                      TableText(
+                                        text: '5000원',
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -726,7 +737,7 @@ class TellGoodThings extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Gap(30),
+        Gap(40),
         Text(
           title,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
