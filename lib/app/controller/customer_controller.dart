@@ -351,7 +351,8 @@ class CustomerController extends GetxController {
     update();
   }
 
-  Future chargePoint({required int customerId, required int point}) async {
+  Future chargePoint(
+      {required int customerId, required int point, String? signature}) async {
     var beforeBalance = balance.value;
     var enterBalance = point;
 
@@ -360,7 +361,8 @@ class CustomerController extends GetxController {
       'money': enterBalance,
       'type': 'add',
       'customer_id': customerId,
-      'created_at': DateTime.now().toIso8601String()
+      'created_at': DateTime.now().toIso8601String(),
+      'signature': signature,
     }).then((value) async {
       await supabase
           .from('customer')
@@ -373,7 +375,8 @@ class CustomerController extends GetxController {
     // setSelectedCustomer(changedCutomer!);
   }
 
-  Future usePoint({required int customerId, required int point}) async {
+  Future usePoint(
+      {required int customerId, required int point, String? signature}) async {
     var beforeBalance = balance.value;
     var enterBalance = point;
 
@@ -385,7 +388,8 @@ class CustomerController extends GetxController {
         'money': enterBalance,
         'type': 'use',
         'customer_id': customerId,
-        'created_at': DateTime.now().toIso8601String()
+        'created_at': DateTime.now().toIso8601String(),
+        'signature': signature,
       }).then((value) async {
         await supabase
             .from('customer')
@@ -401,7 +405,8 @@ class CustomerController extends GetxController {
         'money': enterBalance,
         'type': 'use',
         'customer_id': customerId,
-        'created_at': DateTime.now().toIso8601String()
+        'created_at': DateTime.now().toIso8601String(),
+        'signature': signature,
       }).then((value) async {
         await supabase
             .from('customer')

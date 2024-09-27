@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:jangboo_flutter/app/data/service/auth_service.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
 import 'package:jangboo_flutter/app/controller/user_controller.dart';
 import 'package:jangboo_flutter/app/controller/customer_controller.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:motion/motion.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -36,7 +38,9 @@ void main() async {
   Get.put(CustomerController());
   Get.put(SettingController());
   Get.put(DemoController());
-
+  if (kIsWeb) {
+    MetaSEO().config();
+  }
   runApp(const MyApp());
 }
 

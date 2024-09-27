@@ -1530,10 +1530,12 @@ file:///Users/seong/flutter_project/jangboo_flutter/.dart_tool/flutter_build/5a3
 file:///Users/seong/flutter_project/jangboo_flutter/.dart_tool/flutter_build/5a39e6ce629b58664072718a440a0c0c/main.dart
 file:///Users/seong/flutter_project/jangboo_flutter/.dart_tool/flutter_build/5a39e6ce629b58664072718a440a0c0c/web_plugin_registrant.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/controller/customer_controller.dart
+file:///Users/seong/flutter_project/jangboo_flutter/lib/app/controller/demo_controller.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/controller/setting_controller.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/controller/user_controller.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/data/enum/sort.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/data/model/customer_model.dart
+file:///Users/seong/flutter_project/jangboo_flutter/lib/app/data/model/demo_customer.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/data/model/user_model.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/data/routes/app_pages.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/data/routes/app_routes.dart
@@ -1541,6 +1543,7 @@ file:///Users/seong/flutter_project/jangboo_flutter/lib/app/data/routes/go_route
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/data/service/auth_service.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/initial_screen.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/supabase.dart
+file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/test.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/theme/app_colors.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/theme/app_sizes.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/theme/app_text_theme.dart
@@ -1548,6 +1551,7 @@ file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/customer/cust
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/customer/customer_inactive_screen.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/customer/customer_screen.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/customer/record_screen.dart
+file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/demo/demo_customer.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/demo/demo_home.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/home/home_screen.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/introduce/introduce_screen.dart
@@ -1559,6 +1563,7 @@ file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/setting/setti
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/web/user/edit_user_screen.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/widget/border_container_widget.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/widget/button_widget.dart
+file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/widget/customer_add_input_widget.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/widget/customer_card_widget.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/widget/input_widget.dart
 file:///Users/seong/flutter_project/jangboo_flutter/lib/app/ui/widget/number_pad_widget.dart

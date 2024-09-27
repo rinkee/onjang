@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -20,6 +21,7 @@ import 'package:jangboo_flutter/app/ui/web/login/password_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/login/sign_in_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/user/edit_user_screen.dart';
 import 'package:jangboo_flutter/app/ui/web/setting/setting_screen.dart';
+import 'package:meta_seo/meta_seo.dart';
 
 final AuthService _authService = Get.find<AuthService>();
 final router = GoRouter(
@@ -146,7 +148,20 @@ final router = GoRouter(
     GoRoute(
       path: Paths.introduce,
       name: Routes.introduce,
-      builder: (context, state) => IntroduceScreen(),
+      builder: (context, state) {
+        if (kIsWeb) {
+          // Define MetaSEO object
+          MetaSEO meta = MetaSEO();
+          // add meta seo data for web app as you want
+          meta.ogTitle(ogTitle: '모두의장부');
+          meta.description(
+              description: '선결제 장부 아직도 노트에 관리하시나요? 모두의장부로 똑똑하게 관리해보세요.');
+          meta.keywords(
+              keywords: '선결제, 장부, 선결제 장부, 자동장부, 온라인장부, 온라인 장부, 자동 장부');
+        }
+
+        return IntroduceScreen();
+      },
     ),
     GoRoute(
       path: Paths.login,
