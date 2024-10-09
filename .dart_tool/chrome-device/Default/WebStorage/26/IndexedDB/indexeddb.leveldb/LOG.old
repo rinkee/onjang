@@ -1,18 +1,8 @@
-2024/09/29-17:02:34.283 8107 Reusing MANIFEST /private/var/folders/1v/m7vbzmln3mjfx4md1352vqkh0000gn/T/flutter_tools.mz2g2L/flutter_tools_chrome_device.641Qz0/Default/WebStorage/26/IndexedDB/indexeddb.leveldb/MANIFEST-000001
-2024/09/29-17:02:34.283 8107 Recovering log #7
-2024/09/29-17:02:34.285 8107 Reusing old log /private/var/folders/1v/m7vbzmln3mjfx4md1352vqkh0000gn/T/flutter_tools.mz2g2L/flutter_tools_chrome_device.641Qz0/Default/WebStorage/26/IndexedDB/indexeddb.leveldb/000007.log 
-2024/09/29-17:02:34.285 8107 Delete type=0 #4
-2024/09/29-17:02:34.285 8107 Delete type=0 #3
-2024/09/29-17:02:34.285 8107 Delete type=2 #5
-2024/09/29-17:12:51.988 8303 Level-0 table #12: started
-2024/09/29-17:12:52.010 8303 Level-0 table #12: 57679 bytes OK
-2024/09/29-17:12:52.055 8303 Delete type=0 #7
-2024/09/29-17:12:52.056 8303 Manual compaction at level-0 from (begin) .. (end); will stop at (end)
-2024/09/29-17:12:52.057 8303 Manual compaction at level-1 from (begin) .. (end); will stop at '\x00\x04\x01\x1f\x04\x03\x01\x06\x00Q\x00U\x00E\x00U\x00E\x00D\x03\x00\x00\x00\x00\x00\x00L@\x03\x000\x065\x84"yB\x00\x03\x00\x00\x00\x00\x00\x00=@' @ 1818 : 1
-2024/09/29-17:12:52.057 8303 Compacting 1@1 + 1@2 files
-2024/09/29-17:12:52.078 8303 Generated table #13@1: 60 keys, 1391 bytes
-2024/09/29-17:12:52.078 8303 Compacted 1@1 + 1@2 files => 1391 bytes
-2024/09/29-17:12:52.115 8303 compacted to: files[ 0 0 1 0 0 0 0 ]
-2024/09/29-17:12:52.116 8303 Delete type=2 #12
-2024/09/29-17:12:52.117 8303 Delete type=2 #9
-2024/09/29-17:12:52.118 8303 Manual compaction at level-1 from '\x00\x04\x01\x1f\x04\x03\x01\x06\x00Q\x00U\x00E\x00U\x00E\x00D\x03\x00\x00\x00\x00\x00\x00L@\x03\x000\x065\x84"yB\x00\x03\x00\x00\x00\x00\x00\x00=@' @ 1818 : 1 .. (end); will stop at (end)
+2024/09/30-00:20:06.614 a503 Reusing MANIFEST /private/var/folders/1v/m7vbzmln3mjfx4md1352vqkh0000gn/T/flutter_tools.htTRYR/flutter_tools_chrome_device.SpAMCp/Default/WebStorage/26/IndexedDB/indexeddb.leveldb/MANIFEST-000001
+2024/09/30-00:20:06.614 a503 Recovering log #11
+2024/09/30-00:20:06.614 a503 Reusing old log /private/var/folders/1v/m7vbzmln3mjfx4md1352vqkh0000gn/T/flutter_tools.htTRYR/flutter_tools_chrome_device.SpAMCp/Default/WebStorage/26/IndexedDB/indexeddb.leveldb/000011.log 
+2024/09/30-00:20:06.615 a503 Delete type=0 #7
+2024/09/30-00:20:06.615 a503 Delete type=0 #4
+2024/09/30-00:20:06.615 a503 Delete type=0 #3
+2024/09/30-00:20:06.615 a503 Delete type=2 #5
+2024/09/30-00:20:06.615 a503 Delete type=2 #9

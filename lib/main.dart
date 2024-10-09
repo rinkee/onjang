@@ -69,7 +69,8 @@ class MyApp extends StatelessWidget {
         Locale('ko', 'KR'),
       ],
       theme: ThemeData(
-          textTheme: GoogleFonts.notoSansNKoTextTheme(textTheme),
+          // textTheme: GoogleFonts.notoSansNKoTextTheme(textTheme),
+          fontFamily: 'Neo',
           colorScheme: ColorScheme.fromSeed(
             seedColor: sgColor,
             background: Colors.white,
@@ -77,10 +78,11 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           useMaterial3: true,
           appBarTheme: AppBarTheme(
-              titleTextStyle: GoogleFonts.notoSansNKo(
+              titleTextStyle: TextStyle(
+                fontFamily: 'Neo',
                 color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
               iconTheme: IconThemeData(color: Colors.grey),
               backgroundColor: Colors.grey[900])),
