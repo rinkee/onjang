@@ -37,7 +37,7 @@ void main() async {
   Get.put(UserController());
   Get.put(CustomerController());
   Get.put(SettingController());
-  Get.put(DemoController());
+  // Get.put(DemoController());
   if (kIsWeb) {
     MetaSEO().config();
   }
@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
       backButtonDispatcher: router.backButtonDispatcher,
       routeInformationParser: router.routeInformationParser,
       routeInformationProvider: router.routeInformationProvider,
-      title: 'Flutter Demo',
+      title: '모두의장부',
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

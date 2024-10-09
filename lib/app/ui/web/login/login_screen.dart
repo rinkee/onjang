@@ -35,15 +35,17 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: MaxWidthBox(
           maxWidth: 1200,
           child: GestureDetector(
               onTap: () {
                 context.replaceNamed(Routes.home);
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text('모두의장부'),
+              child: Text(
+                '모두의장부',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               )),
         ),
         centerTitle: true,
@@ -182,6 +184,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         context.goNamed(Routes.home);
                       }
 
+                      if (login == false || email == '' || password == '') {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          dismissDirection: DismissDirection.up,
+
+                          content: Text(
+                            '이메일 혹은 비밀번호를 확인해주세요',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          margin: EdgeInsets.only(
+                              bottom: context.mediaQuerySize.height - 80,
+                              left: 10,
+                              right: 10),
+                          behavior: SnackBarBehavior.floating,
+                          duration: Duration(seconds: 3),
+                          backgroundColor: Colors.red,
+                          // action: SnackBarAction(
+                          //   label: '확인',
+                          //   textColor: Colors.white,
+                          //   onPressed: () {
+                          //     // context.pop();
+                          //   }, //버튼 눌렀을때.
+                          // ),
+                        ));
+                      }
+
                       //   final emailCheck = await supabase
                       //       .from('user')
                       //       .select('*')
@@ -219,26 +246,50 @@ class _LoginScreenState extends State<LoginScreen> {
                       //   //   print('로그인 실패');
                       //   // }
                     }
+                    if (email == '' || password == '') {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        dismissDirection: DismissDirection.up,
 
-                    if (email == '' && password == '') {
-                      print('이메일 확인');
-                      Get.snackbar('이메일과 비밀번호를을 입력해주세요', '이메일과 비밀번호는 필수 입력입니다.',
-                          colorText: Colors.white,
-                          backgroundColor: Colors.black,
-                          snackPosition: SnackPosition.TOP);
-                    } else if (email == '') {
-                      print('이메일 확인');
-                      Get.snackbar('이메일을 입력해주세요', '이메일은 필수 입력입니다.',
-                          colorText: Colors.white,
-                          backgroundColor: Colors.black,
-                          snackPosition: SnackPosition.TOP);
-                    } else if (password == '') {
-                      print('비밀번호 확인');
-                      Get.snackbar('비밀번호를 입력해주세요', '비밀번호는 필수 입력입니다.',
-                          colorText: Colors.white,
-                          backgroundColor: Colors.black,
-                          snackPosition: SnackPosition.TOP);
+                        content: Text(
+                          '이메일 혹은 비밀번호를 확인해주세요',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        margin: EdgeInsets.only(
+                            bottom: context.mediaQuerySize.height - 80,
+                            left: 10,
+                            right: 10),
+                        behavior: SnackBarBehavior.floating,
+                        duration: Duration(seconds: 3),
+                        backgroundColor: Colors.black,
+                        // action: SnackBarAction(
+                        //   label: '확인',
+                        //   textColor: Colors.white,
+                        //   onPressed: () {
+                        //     // context.pop();
+                        //   }, //버튼 눌렀을때.
+                        // ),
+                      ));
                     }
+
+                    // if (email == '' && password == '') {
+                    //   print('이메일 확인');
+                    //   Get.snackbar('이메일과 비밀번호를을 입력해주세요', '이메일과 비밀번호는 필수 입력입니다.',
+                    //       colorText: Colors.white,
+                    //       backgroundColor: Colors.black,
+                    //       snackPosition: SnackPosition.TOP);
+                    // } else if (email == '') {
+                    //   print('이메일 확인');
+                    //   Get.snackbar('이메일을 입력해주세요', '이메일은 필수 입력입니다.',
+                    //       colorText: Colors.white,
+                    //       backgroundColor: Colors.black,
+                    //       snackPosition: SnackPosition.TOP);
+                    // } else if (password == '') {
+                    //   print('비밀번호 확인');
+                    //   Get.snackbar('비밀번호를 입력해주세요', '비밀번호는 필수 입력입니다.',
+                    //       colorText: Colors.white,
+                    //       backgroundColor: Colors.black,
+                    //       snackPosition: SnackPosition.TOP);
+                    // }
                   },
                   bgColor: sgColor,
                   child: const Center(

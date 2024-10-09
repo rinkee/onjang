@@ -84,15 +84,17 @@ class _PasswordScreenState extends State<PasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: MaxWidthBox(
           maxWidth: 1200,
           child: GestureDetector(
               onTap: () {
                 context.replaceNamed(Routes.home);
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text('모두의장부'),
+              child: Text(
+                '모두의장부',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               )),
         ),
         centerTitle: true,

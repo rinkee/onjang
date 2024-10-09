@@ -384,6 +384,7 @@ class CustomerController extends GetxController {
     var newBalance = beforeBalance - enterBalance;
     if (newBalance < 0) {
       print('잔액 부족');
+      print(signature);
       await supabase.from('balance_log').insert({
         'money': enterBalance,
         'type': 'use',
@@ -498,6 +499,16 @@ class CustomerController extends GetxController {
 
   setFavorite({required int customerId, required bool favorite}) async {
     await supabase.from('customer').update({'favorite': favorite}).eq(
+      'id',
+      customerId,
+    );
+  }
+
+  toggleUseSignature({
+    required int customerId,
+    required bool newV,
+  }) async {
+    await supabase.from('customer').update({'use_signature': newV}).eq(
       'id',
       customerId,
     );

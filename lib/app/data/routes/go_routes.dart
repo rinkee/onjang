@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jangboo_flutter/app/controller/demo_controller.dart';
+import 'package:jangboo_flutter/app/controller/signature_controller.dart';
 import 'package:jangboo_flutter/app/data/model/demo_customer.dart';
 import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/data/service/auth_service.dart';
@@ -89,7 +91,15 @@ final router = GoRouter(
     GoRoute(
       path: Paths.demohome,
       name: Routes.demohome,
-      builder: (context, state) => const DemoHome(),
+      builder: (context, state) {
+        return GetBuilder(
+          init: DemoController(),
+          dispose: (state) {
+            Get.delete<DemoController>();
+          },
+          builder: (controller) => DemoHome(),
+        );
+      },
     ),
     GoRoute(
       path: Paths.demoCustomer,
@@ -106,7 +116,17 @@ final router = GoRouter(
         GoRoute(
           path: Paths.customer,
           name: Routes.customer,
-          builder: (context, state) => CustomerScreen(),
+          builder: (context, state) {
+            // final ForSignatureController controller =
+            //     Get.put(ForSignatureController());
+            return GetBuilder(
+              init: ForSignatureController(),
+              dispose: (state) {
+                Get.delete<ForSignatureController>();
+              },
+              builder: (controller) => CustomerScreen(),
+            );
+          },
           routes: [
             GoRoute(
               path: Paths.customerEdit,
@@ -155,9 +175,10 @@ final router = GoRouter(
           // add meta seo data for web app as you want
           meta.ogTitle(ogTitle: '모두의장부');
           meta.description(
-              description: '선결제 장부 아직도 노트에 관리하시나요? 모두의장부로 똑똑하게 관리해보세요.');
+              description:
+                  '효율적이고 트렌디한 사장님들을 위한 혁신적인 선결제 온라인 장부 서비스로, 매장 관리를 간소화하고 고객 경험을 향상시킵니다.');
           meta.keywords(
-              keywords: '선결제, 장부, 선결제 장부, 자동장부, 온라인장부, 온라인 장부, 자동 장부');
+              keywords: '모두의장부, 선결제, 장부, 선결제 장부, 자동장부, 온라인장부, 온라인 장부, 자동 장부');
         }
 
         return IntroduceScreen();

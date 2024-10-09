@@ -187,15 +187,17 @@ class _EmailScreenState extends State<EmailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: MaxWidthBox(
           maxWidth: 1200,
           child: GestureDetector(
               onTap: () {
                 context.replaceNamed(Routes.home);
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text('모두의장부'),
+              child: Text(
+                '모두의장부',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               )),
         ),
         centerTitle: true,
@@ -246,7 +248,7 @@ class _EmailScreenState extends State<EmailScreen> {
                               if (check == true) {
                                 print('다음 화면으로');
 
-                                context.goNamed(Routes.password,
+                                context.pushNamed(Routes.password,
                                     extra: emailCtr.text);
                               } else {
                                 print('이메일 확인 필요');
@@ -266,7 +268,7 @@ class _EmailScreenState extends State<EmailScreen> {
                     Center(
                       child: TextButton(
                           onPressed: () {
-                            context.pushNamed(Routes.login);
+                            context.goNamed(Routes.login);
                           },
                           child: const Text('아이디가 있으신가요? 로그인')),
                     ),

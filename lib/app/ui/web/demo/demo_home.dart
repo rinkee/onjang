@@ -349,6 +349,7 @@ class _DemoHomeState extends State<DemoHome> {
                                     favorite: false,
                                     state: CTMState.active,
                                     log: [].obs,
+                                    useSignature: false,
                                   );
                                   _demoCtr.addNewCustomer(newCustomer);
                                   context.pop();

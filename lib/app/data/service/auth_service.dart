@@ -127,7 +127,6 @@ class AuthService extends GetxService {
 
   Future logIn({required String email, required String password}) async {
     try {
-      print('login');
       final AuthResponse res = await _supabase.auth.signInWithPassword(
         email: email,
         password: password,
@@ -136,7 +135,7 @@ class AuthService extends GetxService {
       final User? user = res.user;
 
       if (session == null) {
-        return;
+        return false;
       }
       await saveUserId(session.user.id);
       UserController _authCtr = Get.find<UserController>();
@@ -166,7 +165,8 @@ class AuthService extends GetxService {
 
       // return res;
     } catch (e) {
-      return e;
+      print('login E : {$e}');
+      return false;
     }
   }
 

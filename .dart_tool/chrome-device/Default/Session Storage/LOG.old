@@ -1,13 +1,18 @@
-2024/09/27-20:24:14.716 2b03 Reusing MANIFEST /private/var/folders/1v/m7vbzmln3mjfx4md1352vqkh0000gn/T/flutter_tools.e7KWAv/flutter_tools_chrome_device.DZNZNu/Default/Session Storage/MANIFEST-000001
-2024/09/27-20:24:14.719 2b03 Recovering log #26
-2024/09/27-20:24:14.720 2b03 Reusing old log /private/var/folders/1v/m7vbzmln3mjfx4md1352vqkh0000gn/T/flutter_tools.e7KWAv/flutter_tools_chrome_device.DZNZNu/Default/Session Storage/000026.log 
-2024/09/27-20:24:14.722 2b03 Delete type=0 #7
-2024/09/27-20:24:14.722 2b03 Delete type=0 #4
-2024/09/27-20:24:14.722 2b03 Delete type=0 #14
-2024/09/27-20:24:14.722 2b03 Delete type=0 #3
-2024/09/27-20:24:14.722 2b03 Delete type=0 #17
-2024/09/27-20:24:14.722 2b03 Delete type=2 #15
-2024/09/27-20:24:14.722 2b03 Delete type=2 #13
-2024/09/27-20:24:14.722 2b03 Delete type=2 #10
-2024/09/27-20:24:14.722 2b03 Delete type=2 #8
-2024/09/27-20:24:14.722 2b03 Delete type=0 #21
+2024/09/30-19:50:46.618 2507 Reusing MANIFEST /private/var/folders/1v/m7vbzmln3mjfx4md1352vqkh0000gn/T/flutter_tools.JQL5j5/flutter_tools_chrome_device.ylMb2m/Default/Session Storage/MANIFEST-000001
+2024/09/30-19:50:46.622 2507 Recovering log #36
+2024/09/30-19:50:46.623 2507 Reusing old log /private/var/folders/1v/m7vbzmln3mjfx4md1352vqkh0000gn/T/flutter_tools.JQL5j5/flutter_tools_chrome_device.ylMb2m/Default/Session Storage/000036.log 
+2024/09/30-19:50:46.629 2507 Delete type=0 #7
+2024/09/30-19:50:46.629 2507 Delete type=0 #4
+2024/09/30-19:50:46.629 2507 Delete type=0 #14
+2024/09/30-19:50:46.629 2507 Delete type=0 #3
+2024/09/30-19:50:46.629 2507 Delete type=0 #17
+2024/09/30-19:50:46.629 2507 Delete type=2 #15
+2024/09/30-19:50:46.629 2507 Delete type=2 #13
+2024/09/30-19:50:46.629 2507 Delete type=2 #10
+2024/09/30-19:50:46.629 2507 Delete type=2 #8
+2024/09/30-19:50:46.629 2507 Delete type=2 #22
+2024/09/30-19:50:46.629 2507 Delete type=2 #27
+2024/09/30-19:50:46.629 2507 Delete type=2 #25
+2024/09/30-19:50:46.629 2507 Delete type=2 #19
+2024/09/30-19:50:46.630 2507 Delete type=0 #26
+2024/09/30-19:50:46.630 2507 Delete type=0 #21

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:jangboo_flutter/app/controller/signature_controller.dart';
 import 'package:jangboo_flutter/app/data/routes/app_pages.dart';
 import 'package:jangboo_flutter/app/data/routes/app_routes.dart';
 import 'package:jangboo_flutter/app/ui/theme/app_colors.dart';
@@ -43,27 +45,15 @@ class _CustomerScreenState extends State<CustomerScreen> {
   final openDialog = false.obs;
   var initCustomerMode = false.obs;
   final isLoading = false.obs;
-  late SignatureController _sigCtr;
+  final ForSignatureController _signatureController = Get.find();
+  final initUseSignature = false.obs;
 
 // INITIALIZE. RESULT IS A WIDGET, SO IT CAN BE DIRECTLY USED IN BUILD METHOD
-  var _signatureCanvas;
 
   @override
   void initState() {
     // TODO: implement initState
     getCustomerModeGetStorage();
-    _sigCtr = SignatureController(
-      penStrokeWidth: 3,
-      penColor: Colors.black,
-      exportBackgroundColor: Colors.transparent,
-    );
-
-    _signatureCanvas = Signature(
-      controller: _sigCtr,
-      width: 460,
-      height: 200,
-      backgroundColor: const Color.fromARGB(255, 244, 244, 244),
-    );
 
     // idx = customerCtr.currentCustomerIndex;m
     customer = _customerCtr.selectedCustomer.value!;
@@ -86,6 +76,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
     _customerCtr.balance.value = customer.balance;
     _customerCtr.addPointValue.value = '';
+    initUseSignature.value = customer.useSignature;
     super.initState();
   }
 
@@ -381,6 +372,29 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               ),
                             ),
                           ),
+                          Gap(10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                '결제 시 서명 사용',
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w600),
+                              ),
+                              const Gap(3),
+                              Obx(
+                                () => Switch(
+                                    value: initUseSignature.value,
+                                    onChanged: (newV) async {
+                                      initUseSignature.value = newV;
+                                      await _customerCtr.toggleUseSignature(
+                                          customerId: customer.id, newV: newV);
+                                      _customerCtr.loadCustomerList();
+                                    }),
+                              )
+                            ],
+                          ),
+
                           const Spacer(),
                           ButtonWidget(
                             onTap: () async {
@@ -389,151 +403,57 @@ class _CustomerScreenState extends State<CustomerScreen> {
                               if (isLoading.value == false &&
                                   _customerCtr.addPointValue.value != '' &&
                                   point != 0) {
+                                print('use');
                                 isLoading.value = true;
-                                try {
-                                  showDialog(
+                                if (initUseSignature.value) {
+                                  print('this customer use signautre ');
+                                  _signatureController.SignatureDialog(
+                                      context, customer.id, () async {
+                                    await _customerCtr
+                                        .usePoint(
+                                      customerId: customer.id,
+                                      point: int.parse(
+                                        _customerCtr.addPointValue.value,
+                                      ),
+                                      signature: _signatureController
+                                          .signatureName.value,
+                                    )
+                                        .then((value) {
+                                      context.pop();
+                                      isLoading.value = false;
+                                      _customerCtr.loadCustomerList();
+                                      _signatureController.clearSignature();
+
+                                      ShowDoneDialog(
+                                        context: context,
+                                        point: _customerCtr.addPointValue.value,
+                                        action: 'use',
+                                      );
+                                    });
+                                  });
+                                } else {
+                                  print('this customer not use signautre ');
+                                  await _customerCtr
+                                      .usePoint(
+                                    customerId: customer.id,
+                                    point: int.parse(
+                                      _customerCtr.addPointValue.value,
+                                    ),
+                                    signature: _signatureController
+                                        .signatureName.value,
+                                  )
+                                      .then((value) {
+                                    // context.pop();
+                                    isLoading.value = false;
+                                    _customerCtr.loadCustomerList();
+                                    _signatureController.clearSignature();
+
+                                    ShowDoneDialog(
                                       context: context,
-                                      builder: (context) => Dialog(
-                                            backgroundColor: Colors.white,
-                                            child: SizedBox(
-                                                width: 500,
-                                                height: 400,
-                                                child: StatefulBuilder(builder:
-                                                    (context, setDialog) {
-                                                  return Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            20.0),
-                                                    child: Column(
-                                                      children: [
-                                                        Text(
-                                                          '서명을 해주세요',
-                                                          style: coNameText,
-                                                        ),
-                                                        Gap(10),
-                                                        Center(
-                                                            child:
-                                                                _signatureCanvas),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              IconButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    _sigCtr
-                                                                        .undo();
-                                                                  },
-                                                                  icon: Icon(Icons
-                                                                      .undo_rounded)),
-                                                              IconButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    _sigCtr
-                                                                        .clear();
-                                                                  },
-                                                                  icon: Icon(Icons
-                                                                      .close)),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        Spacer(),
-                                                        ButtonWidget(
-                                                            bgColor: _sigCtr
-                                                                    .value
-                                                                    .isEmpty
-                                                                ? null
-                                                                : Colors.blue,
-                                                            onTap: () async {
-                                                              var signatureName =
-                                                                  '';
-                                                              var image =
-                                                                  await _sigCtr
-                                                                      .toPngBytes();
-
-                                                              if (image !=
-                                                                  null) {
-                                                                signatureName = customer
-                                                                        .id
-                                                                        .toString() +
-                                                                    DateTime.now()
-                                                                        .toString() +
-                                                                    '.png';
-                                                                print(
-                                                                    signatureName);
-                                                                final String
-                                                                    fullPath =
-                                                                    await supabase
-                                                                        .storage
-                                                                        .from(
-                                                                            'signatures')
-                                                                        .uploadBinary(
-                                                                          signatureName,
-                                                                          image,
-                                                                        )
-                                                                        .whenComplete(
-                                                                            () async {
-                                                                  var url = await supabase
-                                                                      .storage
-                                                                      .from(
-                                                                          'signatures')
-                                                                      .createSignedUrl(
-                                                                          signatureName,
-                                                                          60);
-
-                                                                  context.pop();
-                                                                });
-                                                              }
-
-                                                              await _customerCtr
-                                                                  .usePoint(
-                                                                      customerId:
-                                                                          customer
-                                                                              .id,
-                                                                      point: int
-                                                                          .parse(
-                                                                        _customerCtr
-                                                                            .addPointValue
-                                                                            .value,
-                                                                      ),
-                                                                      signature:
-                                                                          signatureName)
-                                                                  .then(
-                                                                      (value) {
-                                                                // setState(() {});
-
-                                                                isLoading
-                                                                        .value =
-                                                                    false;
-                                                                _customerCtr
-                                                                    .loadCustomerList();
-                                                                _sigCtr.clear();
-                                                                ShowDoneDialog(
-                                                                    context:
-                                                                        context,
-                                                                    point: _customerCtr
-                                                                        .addPointValue
-                                                                        .value,
-                                                                    action:
-                                                                        'use');
-                                                              });
-                                                            },
-                                                            child: Text('확인'))
-                                                      ],
-                                                    ),
-                                                  );
-                                                })),
-                                          ));
-                                } catch (e) {
-                                  print(e);
+                                      point: _customerCtr.addPointValue.value,
+                                      action: 'use',
+                                    );
+                                  });
                                 }
                               } else {}
                             },
@@ -565,6 +485,98 @@ class _CustomerScreenState extends State<CustomerScreen> {
           }),
     );
   }
+
+  // void SignatureDialog(BuildContext context) {
+  //   try {
+  //     showDialog(
+  //         context: context,
+  //         builder: (context) => Dialog(
+  //               backgroundColor: Colors.white,
+  //               child: SizedBox(
+  //                   width: 500,
+  //                   height: 400,
+  //                   child: StatefulBuilder(builder: (context, setDialog) {
+  //                     return Padding(
+  //                       padding: const EdgeInsets.all(20.0),
+  //                       child: Column(
+  //                         children: [
+  //                           Text(
+  //                             '서명을 해주세요',
+  //                             style: coNameText,
+  //                           ),
+  //                           Gap(10),
+  //                           Center(child: _signatureController.signatureCanvas),
+  //                           Padding(
+  //                             padding: const EdgeInsets.all(8.0),
+  //                             child: Row(
+  //                               mainAxisAlignment: MainAxisAlignment.center,
+  //                               crossAxisAlignment: CrossAxisAlignment.center,
+  //                               children: [
+  //                                 IconButton(
+  //                                     onPressed: () {
+  //                                       _sigCtr.undo();
+  //                                     },
+  //                                     icon: Icon(Icons.undo_rounded)),
+  //                                 IconButton(
+  //                                     onPressed: () {
+  //                                       _sigCtr.clear();
+  //                                     },
+  //                                     icon: Icon(Icons.close)),
+  //                               ],
+  //                             ),
+  //                           ),
+  //                           Spacer(),
+  //                           ButtonWidget(
+  //                               bgColor:
+  //                                   _sigCtr.value.isEmpty ? null : Colors.blue,
+  //                               onTap: () async {
+  //                                 var signatureName = '';
+
+  //                                 var image = await _sigCtr.toPngBytes();
+  //                                 if (_sigCtr.value.isNotEmpty &&
+  //                                     image != null) {
+  //                                   signatureName = customer.id.toString() +
+  //                                       DateTime.now().toString() +
+  //                                       '.png';
+  //                                   print(signatureName);
+  //                                   final String fullPath = await supabase
+  //                                       .storage
+  //                                       .from('signatures/${customer.id}')
+  //                                       .uploadBinary(
+  //                                         signatureName,
+  //                                         image,
+  //                                       );
+  //                                 }
+
+  //                                 await _customerCtr
+  //                                     .usePoint(
+  //                                         customerId: customer.id,
+  //                                         point: int.parse(
+  //                                           _customerCtr.addPointValue.value,
+  //                                         ),
+  //                                         signature: signatureName)
+  //                                     .then((value) {
+  //                                   // setState(() {});
+  //                                   context.pop();
+  //                                   isLoading.value = false;
+  //                                   _customerCtr.loadCustomerList();
+  //                                   _sigCtr.clear();
+  //                                   ShowDoneDialog(
+  //                                       context: context,
+  //                                       point: _customerCtr.addPointValue.value,
+  //                                       action: 'use');
+  //                                 });
+  //                               },
+  //                               child: Text('확인'))
+  //                         ],
+  //                       ),
+  //                     );
+  //                   })),
+  //             ));
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   Future<dynamic> ShowDoneDialog(
       {required BuildContext context,
@@ -1022,23 +1034,36 @@ class _CustomerScreenState extends State<CustomerScreen> {
                                   width: 300,
                                   child: ButtonWidget(
                                       onTap: () async {
+                                        // context.pop();
                                         if (isLoading.value == false) {
                                           isLoading.value = true;
                                           try {
-                                            await _customerCtr
-                                                .chargePoint(
-                                                    customerId: customer.id,
-                                                    point: addPoint.toInt())
-                                                .then((value) {
+                                            _signatureController
+                                                .SignatureDialog(
+                                                    context, customer.id,
+                                                    () async {
                                               context.pop();
-
-                                              isLoading.value = false;
-                                              _customerCtr.loadCustomerList();
-                                              ShowDoneDialog(
-                                                  context: context,
-                                                  point: _customerCtr
-                                                      .usePotinValue.value,
-                                                  action: 'charge');
+                                              await _customerCtr
+                                                  .chargePoint(
+                                                      customerId: customer.id,
+                                                      point: addPoint.toInt(),
+                                                      signature:
+                                                          _signatureController
+                                                              .signatureName
+                                                              .value)
+                                                  .then((value) {
+                                                context.pop();
+                                                // context.pop();
+                                                isLoading.value = false;
+                                                _customerCtr.loadCustomerList();
+                                                _signatureController
+                                                    .clearSignature();
+                                                ShowDoneDialog(
+                                                    context: context,
+                                                    point: _customerCtr
+                                                        .usePotinValue.value,
+                                                    action: 'charge');
+                                              });
                                             });
                                           } catch (e) {
                                             print(e);
@@ -1205,11 +1230,11 @@ class History extends StatelessWidget {
                               children: [
                                 InkWell(
                                   onTap: () async {
-                                    var url = await supabase.storage
-                                        .from('signatures')
-                                        .createSignedUrl('avatar2.png', 60);
+                                    // var url = await supabase.storage
+                                    //     .from('signatures')
+                                    //     .createSignedUrl('avatar2.png', 1);
                                     MenuDialog(context, transaction);
-                                    print(transaction);
+                                    // print(url);
                                     // if (transaction['canceled'] == true) {
                                     //   AskCanceledToBack(
                                     //       context,
@@ -1231,6 +1256,8 @@ class History extends StatelessWidget {
                                         top: 5, bottom: 5),
                                     child: Row(
                                       children: [
+                                        // Text(
+                                        //     transaction['signature'] ?? 'null'),
                                         transaction['type'] == 'add'
                                             ? CircleAvatar(
                                                 radius: 16,
@@ -1289,6 +1316,12 @@ class History extends StatelessWidget {
                                           style: const TextStyle(
                                               fontSize: 14, color: Colors.blue),
                                         ),
+                                        const Gap(10),
+                                        if (transaction['signature'] != '')
+                                          Icon(
+                                            CupertinoIcons.signature,
+                                            color: Colors.grey,
+                                          ),
                                         const Gap(10),
                                         Text(
                                           DateFormat('HH:mm').format(
@@ -1476,16 +1509,17 @@ class History extends StatelessWidget {
                     ),
                     if (data['signature'] != null)
                       SizedBox(
-                        width: 100,
-                        height: 100,
+                        width: 260,
+                        height: 200,
                         child: FutureBuilder(
                             future: supabase.storage
-                                .from('signatures')
-                                .createSignedUrl(data['signature'], 1),
+                                .from('signatures/${customer.id}')
+                                .createSignedUrl(data['signature'], 60),
                             builder: (context, snapshot) {
                               // print(snapshot.data!);
                               // return Text('load');
                               if (snapshot.data != null) {
+                                print(snapshot.data);
                                 // return Container(
                                 //   decoration: BoxDecoration(
                                 //       color: Colors.grey[100],
@@ -1494,20 +1528,32 @@ class History extends StatelessWidget {
                                 // );
                                 return BorderContainerWidget(
                                     color: Colors.grey[100],
-                                    w: 50,
-                                    h: 50,
-                                    child: Image.network(snapshot.data!));
+                                    w: 200,
+                                    h: 200,
+                                    child: Image.network(
+                                      snapshot.data!,
+                                      width: 200,
+                                      height: 200,
+                                    ));
                               }
+                              if (data['signature'] == null ||
+                                  data['signature'] == '')
+                                return BorderContainerWidget(
+                                    color: Colors.grey[100],
+                                    w: 200,
+                                    h: 200,
+                                    child: Center(child: Text('서명없음')));
 
                               return BorderContainerWidget(
                                   color: Colors.grey[100],
-                                  w: 50,
-                                  h: 50,
+                                  w: 100,
+                                  h: 100,
                                   child: Center(
                                       child: CircularProgressIndicator()));
                             }),
                       ),
-                    if (data['signature'] == null) Text('서명없음'),
+
+                    Gap(20),
                     // Text('${data['canceled'].toString()}'),
                     StateChangeButtonWidget(
                       onTap: () async {

@@ -21,6 +21,7 @@ class CustomerModel {
   int balance;
   bool favorite;
   RxList? log;
+  final bool useSignature;
 
   CustomerModel({
     required this.id,
@@ -37,6 +38,7 @@ class CustomerModel {
     required this.favorite,
     required this.state,
     this.log,
+    required this.useSignature,
   });
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
@@ -54,6 +56,7 @@ class CustomerModel {
       balance: json['balance'],
       favorite: json['favorite'] as bool,
       state: json['state'] as String,
+      useSignature: json['use_signature'] as bool,
     );
   }
 
@@ -71,7 +74,8 @@ class CustomerModel {
       'user_id': userId,
       'balance': balance,
       'favorite': favorite,
-      'state': state
+      'state': state,
+      'use_signature': useSignature,
     };
   }
 }

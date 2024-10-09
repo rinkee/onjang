@@ -68,6 +68,29 @@ class _EditUserScreenState extends State<EditUserScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Obx(() {
+              if (_userCtr.user.value == null) {
+                return Text('로딩중');
+              } else {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        Text('이메일'),
+                        Text(_userCtr.user.value!.email),
+                      ],
+                    ),
+
+                    Text(_userCtr.user.value!.createdAt.toString()),
+                    Text(_userCtr.user.value!.lastLogin.toString()),
+                    Text(_userCtr.user.value!.phone.toString()),
+                    Text(_userCtr.user.value!.uid.toString()),
+                    // Text(_userCtr.user.value!.toJson().toString()),
+                  ],
+                );
+              }
+            }),
             SizedBox(
               width: 300,
               child: InputWidget(

@@ -22,6 +22,7 @@ class DemoController extends GetxController {
       favorite: false,
       state: CTMState.active,
       log: [].obs,
+      useSignature: false,
     ),
     CustomerModel(
       id: 1,
@@ -35,6 +36,7 @@ class DemoController extends GetxController {
       favorite: false,
       state: CTMState.active,
       log: [].obs,
+      useSignature: false,
     ),
   ].obs;
   final RxList<String> demoCompanyList = <String>[].obs;
